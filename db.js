@@ -1,3 +1,4 @@
+// import northwind_create from "/sample_data/northwind.js";
 let db = null;
 export let total_sql_time = 0;
 
@@ -17,7 +18,7 @@ export function init() {
         console.error("worker error:", ev);
       },
       onready: async function () {
-        let createScript = await fetch("create.sql").then((r) => r.text());
+        let northwind_create = await fetch("create.sql").then((r) => r.text());
         await promiser("open", {
           filename: "northwind.db",
         });
@@ -37,7 +38,7 @@ export function init() {
           return result;
         }
 
-        await exec(createScript);
+        await exec(northwind_create);
 
         resolve(exec);
       },

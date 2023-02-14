@@ -1,6 +1,21 @@
 import "./style.css";
 import * as db from "./db.js";
-console.log(db);
+import * as d3 from "d3";
+import { pie } from "./charts/d3.js";
+import { dotplot } from "./charts/plot.js";
+
+console.log(pie, dotplot);
+
+let chartID = 0;
+function createChartElement() {
+  const chart = document.createElement("div");
+  chart.id = `chart${chartID++}`;
+  document.querySelector("#app").appendChild(chart);
+  return chart;
+}
+pie({ querySelector: `#${createChartElement().id}` });
+
+// select ProductID, COUNT(*) from [Order Details] GROUP BY ProductID
 
 // if get param is set then don't eagerly load the worker
 const lazy = new URLSearchParams(window.location.search).has("lazy");
@@ -29,15 +44,6 @@ const sheets = [
   { title: "Territories", sql: "select * from [Territories];" },
 ];
 
-(async () => {
-  let exec = await db.init();
-  for (let { title, sql } of sheets) {
-    let result = await exec(sql);
-    console.log(title, result, db.total_sql_time);
-    create_grid(result.result.resultRows, result.result.columnNames);
-  }
-})();
-
 function create_grid(rows, columns) {
   const container = document.createElement("div");
   document.querySelector("#app").appendChild(container);
@@ -62,3 +68,16 @@ function create_grid(rows, columns) {
 // }
 
 // document.querySelector("#sheets button").click();
+
+function runQueries() {
+  (async () => {
+    let exec = await db.init();
+    for (let { title, sql } of sheets) {
+      let result = await exec(sql);
+      console.log(title, result, db.total_sql_time);
+      create_grid(result.result.resultRows, result.result.columnNames);
+    }
+  })();
+}
+
+runQueries();
