@@ -7,7 +7,16 @@
     <title>Data UI tests</title>
   </head>
   <body>
-    <div id="app"></div>
+    <header>
+      <h1>Data UI Tests <button id="run">Run</button></h1>
+      <div id="status"></div>
+    </header>
+    <div id="app">
+      <div id="results"></div>
+    </div>
+    <footer>
+      <div id="query-options" class="options"></div>
+    </footer>
     <script src="/sqlite3-worker1-promiser.js"></script>
     <script type="module" src="/main.js"></script>
   </body>

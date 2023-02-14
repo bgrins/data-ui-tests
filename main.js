@@ -3,18 +3,30 @@ import * as db from "./db.js";
 import * as d3 from "d3";
 import { pie } from "./charts/d3.js";
 import { dotplot } from "./charts/plot.js";
+import vanilla_table from "./tables/vanilla.js";
 
 console.log(pie, dotplot);
+
+let results = document.querySelector("#results");
 
 let chartID = 0;
 function createChartElement() {
   const chart = document.createElement("div");
   chart.id = `chart${chartID++}`;
-  document.querySelector("#app").appendChild(chart);
+  results.appendChild(chart);
   return chart;
 }
 pie({ querySelector: `#${createChartElement().id}` });
 
+function setStatus(text) {
+  document.querySelector("#status").textContent = text;
+}
+
+db.emitter.addEventListener("execcomplete", (e) => {
+  setStatus(`Query took ${e.detail.time}ms`);
+});
+
+setStatus("Initializing database");
 // select ProductID, COUNT(*) from [Order Details] GROUP BY ProductID
 
 // if get param is set then don't eagerly load the worker
@@ -44,12 +56,26 @@ const sheets = [
   { title: "Territories", sql: "select * from [Territories];" },
 ];
 
+for (let { title, sql } of sheets) {
+  // append to query-options
+  let input = document.createElement("input");
+  input.type = "radio";
+  input.name = "query";
+  input.value = sql;
+  input.id = `query-${title}`;
+  input.checked = title === "Categories";
+  let label = document.createElement("label");
+  label.textContent = title;
+  label.htmlFor = `query-${title}`;
+  document.querySelector("#query-options").append(input, label);
+}
+
 function create_grid(rows, columns) {
   const container = document.createElement("div");
-  document.querySelector("#app").appendChild(container);
+  results.append(container);
   const data = [columns, ...rows];
   console.log(data);
-  container.textContent = JSON.stringify(data, null, 2);
+  vanilla_table({ container, data });
 }
 
 // for (let sheet of sheets) {
@@ -75,7 +101,11 @@ function runQueries() {
     for (let { title, sql } of sheets) {
       let result = await exec(sql);
       console.log(title, result, db.total_sql_time);
-      create_grid(result.result.resultRows, result.result.columnNames);
+      let { resultRows, columnNames } = result.result;
+      if (resultRows.length === 0) {
+        continue;
+      }
+      create_grid(resultRows, columnNames);
     }
   })();
 }

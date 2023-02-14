@@ -2,6 +2,7 @@
 let db = null;
 export let total_sql_time = 0;
 
+export let emitter =  new EventTarget();
 export function init() {
   if (db) {
     return db;
@@ -30,7 +31,18 @@ export function init() {
             resultRows: [],
             columnNames: [],
           });
-          total_sql_time += performance.now() - s;
+          let time = performance.now() - s;
+          total_sql_time += time;
+
+          const execcomplete = new CustomEvent("execcomplete", {
+            detail: {
+              time,
+            },
+          });
+
+          // dispatch the events
+          emitter.dispatchEvent(execcomplete);
+
           console.log(
             `Query ${sql.substring(0, 100)} took`,
             performance.now() - s

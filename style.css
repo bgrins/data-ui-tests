@@ -3,8 +3,9 @@
   line-height: 1.5;
   font-weight: 400;
 
+  --text-color: rgba(255, 255, 255, 0.87);
   color-scheme: light dark;
-  color: rgba(255, 255, 255, 0.87);
+  color: var(--text-color);
   background-color: #242424;
 
   font-synthesis: none;
@@ -26,61 +27,77 @@ a:hover {
 body {
   margin: 0;
   display: flex;
-  place-items: center;
+  flex-direction: column;
   min-width: 320px;
-  min-height: 100vh;
+  height: 100vh;
+  overflow: hidden;
+}
+header {
+  display: flex;
+  border-bottom: solid 1px rgba(255, 255, 255, 0.12);
+  padding: 3px;
 }
 
+footer {
+  padding: 3px 50px;
+  display: flex;
+}
 h1 {
-  font-size: 3.2em;
-  line-height: 1.1;
+  flex: 1;
+  font-size: 14px;
+  margin: 0;
+  padding: 0;
+}
+#status {
+  font-size: 10px;
+  margin: 0;
+  padding: 5px 0;
+  text-align: right;
+  color: rgba(255, 255, 255, 0.5);
+  border-radius: 5px;
+  background: rgba(255, 166, 0, 0.1);
+}
+
+.options {
+  position: relative;
+  border: solid 1px orange;
+  border-radius: 1px;
+  margin-right: 5px;
+}
+
+.options > label {
+  display: inline-block;
+  min-width: 60px;
+  padding: 0 5px;
+  text-align: center;
+  cursor: pointer;
+  font-weight: bold;
+  text-transform: capitalize;
+}
+.options > input[type="radio"] {
+  display: none;
+}
+
+.options > input[type="radio"]:checked + label {
+  background: orange;
 }
 
 #app {
-  max-width: 1280px;
   margin: 0 auto;
-  padding: 2rem;
+  width: 100%;
   text-align: center;
+  flex: 1;
+  overflow: hidden;
 }
 
-.logo {
-  height: 6em;
-  padding: 1.5em;
-  will-change: filter;
-  transition: filter 300ms;
-}
-.logo:hover {
-  filter: drop-shadow(0 0 2em #646cffaa);
-}
-.logo.vanilla:hover {
-  filter: drop-shadow(0 0 2em #f7df1eaa);
-}
-
-.card {
-  padding: 2em;
-}
-
-.read-the-docs {
-  color: #888;
-}
-
-button {
-  border-radius: 8px;
-  border: 1px solid transparent;
-  padding: 0.6em 1.2em;
-  font-size: 1em;
-  font-weight: 500;
-  font-family: inherit;
-  background-color: #1a1a1a;
-  cursor: pointer;
-  transition: border-color 0.25s;
-}
-button:hover {
-  border-color: #646cff;
-}
-button:focus,
-button:focus-visible {
-  outline: 4px auto -webkit-focus-ring-color;
+#results {
+  box-sizing: border-box;
+  margin: 0 auto;
+  padding: 50px;
+  overflow-y: auto;
+  height: 100%;
+  flex-direction: column;
+  display: flex;
 }
 
 @media (prefers-color-scheme: light) {
@@ -94,4 +111,14 @@ button:focus-visible {
   button {
     background-color: #f9f9f9;
   }
+}
+
+table.vanilla {
+  border-collapse: collapse;
+  border-spacing: 0;
+  width: 100%;
+  margin: 10px auto;
+  color: #000000;
+  background-color: #ffffff;
+  overflow: auto;
 }
