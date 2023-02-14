@@ -15,4 +15,4 @@ cp sqlite_wasm/jswasm/* public
 
 CREATE_SCRIPT="https://raw.githubusercontent.com/jpwhite3/northwind-SQLite3/1c297ca0fb5fe36f9cd7b5a8afffece9a1f017d1/src/create.sql"
 echo "Downloading Northwind DB from $CREATE_SCRIPT";
-curl -o create.sql $CREATE_SCRIPT
+curl -o public/create.sql $CREATE_SCRIPT
