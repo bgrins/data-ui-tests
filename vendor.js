@@ -26,6 +26,27 @@ async function get_athlete_data() {
     `export default ${JSON.stringify(data, null, 2)}`
   );
 }
+
+async function get_revenue_by_music_format_data() {
+  // https://observablehq.com/@mbostock/revenue-by-music-format-1973-2018
+  // From https://observablehq.com/@observablehq/plot
+  const RESOURCE =
+    "https://static.observableusercontent.com/files/bc1d6e93fd1c8625c67a7afb0406aa0e6d956c0719b8b6f0b0348dc86f9f8f1423e1e157dcda317c9d13622598699a0b3feca27b361f934033ce302f88230607?response-content-disposition=attachment%3Bfilename*%3DUTF-8%27%27music.csv";
+  console.log(`Downloading revenue csv from ${RESOURCE}`);
+  let resp = await fetch(RESOURCE);
+  let text = await resp.text();
+  await Deno.writeTextFile("sample_data/revenue_by_music_format.csv", text);
+  const f = await Deno.open("sample_data/revenue_by_music_format.csv");
+  let data = [];
+  for await (const obj of readCSVObjects(f)) {
+    data.push(obj);
+  }
+  await Deno.writeTextFile(
+    "sample_data/revenue_by_music_format.js",
+    `export default ${JSON.stringify(data, null, 2)}`
+  );
+}
+
 async function get_northwind_data() {
   const RESOURCE =
     "https://raw.githubusercontent.com/jpwhite3/northwind-SQLite3/1c297ca0fb5fe36f9cd7b5a8afffece9a1f017d1/src/create.sql";
@@ -42,5 +63,5 @@ async function get_northwind_data() {
 }
 
 await get_athlete_data();
-
+await get_revenue_by_music_format_data();
 await get_northwind_data();
