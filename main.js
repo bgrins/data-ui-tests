@@ -164,9 +164,12 @@ async function runQuery() {
   results.append(container);
   const data = [columnNames, ...resultRows];
   renderer({ container, data });
-  setStatus(
-    `Grid creation for ${title}: ${Math.round(performance.now() - step)} ms`
-  );
+
+  if (renderer !== noop) {
+    setStatus(
+      `Grid creation for ${title}: ${Math.round(performance.now() - step)} ms`
+    );
+  }
   return {
     result,
   };
