@@ -8,7 +8,11 @@
   </head>
   <body>
     <header>
-      <h1>Data UI Tests <button id="run">Run</button></h1>
+      <h1>
+        Data UI Tests
+        <button id="run">Run</button>
+        <button id="show-logs">Logs</button>
+      </h1>
       <div id="status"></div>
     </header>
     <div id="app">
@@ -17,6 +21,13 @@
     <footer>
       <div id="query-options" class="options"></div>
     </footer>
+    <dialog id="logs">
+      <form method="dialog">
+        <button>Close</button>
+        <code id="total-db-ms" style="float:right"></code>
+      </form>
+      <pre id="log"></pre>
+    </dialog>
     <script src="/sqlite3-worker1-promiser.js"></script>
     <script type="module" src="/main.js"></script>
   </body>

@@ -99,6 +99,20 @@ h1 {
   display: flex;
 }
 
+dialog {
+  border: none !important;
+  border-radius: 5px;
+  padding: 1.6rem;
+  max-width: 80vw;
+}
+dialog::backdrop {
+  backdrop-filter: blur(1px);
+}
+dialog pre {
+  width: 70vw;
+  max-height: 80vh;
+}
+
 .charts svg {
   color: rgba(0, 0, 0, 0.8);
 }

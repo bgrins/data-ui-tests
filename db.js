@@ -2,7 +2,7 @@ import northwind_create from "/sample_data/northwind.js";
 let db = null;
 export let total_sql_time = 0;
 
-export let emitter =  new EventTarget();
+export let emitter = new EventTarget();
 export function init() {
   if (db) {
     return db;
@@ -37,7 +37,9 @@ export function init() {
           const execcomplete = new CustomEvent("execcomplete", {
             detail: {
               time,
-              message:  `Query \`${sql.substring(0, 100)}\` took ${time}ms`,
+              message: `Query \`${sql
+                .substring(0, 80)
+                .replace(/(\r\n|\n|\r)/gm, "")}\` took ${Math.round(time)}ms`,
               sql,
             },
           });
