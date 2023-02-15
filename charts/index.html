@@ -1,0 +1,23 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <link rel="icon" type="image/svg+xml" href="/database.svg" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Data UI tests</title>
+  </head>
+  <body>
+    <header>
+      <h1>Data UI Tests <button id="run">Run</button></h1>
+      <label style="display: flex"
+        >Size <input type="range" min="10" max="600" id="chart-size"
+      /></label>
+      <div id="status"></div>
+    </header>
+    <div id="app">
+      <div class="charts" id="results"></div>
+    </div>
+    <footer></footer>
+    <script type="module" src="/charts/main.js"></script>
+  </body>
+</html>

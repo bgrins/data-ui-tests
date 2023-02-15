@@ -1,4 +1,4 @@
-// import northwind_create from "/sample_data/northwind.js";
+import northwind_create from "/sample_data/northwind.js";
 let db = null;
 export let total_sql_time = 0;
 
@@ -19,7 +19,7 @@ export function init() {
         console.error("worker error:", ev);
       },
       onready: async function () {
-        let northwind_create = await fetch("create.sql").then((r) => r.text());
+        // let northwind_create = await fetch("create.sql").then((r) => r.text());
         await promiser("open", {
           filename: "northwind.db",
         });
@@ -37,16 +37,12 @@ export function init() {
           const execcomplete = new CustomEvent("execcomplete", {
             detail: {
               time,
+              message:  `Query \`${sql.substring(0, 100)}\` took ${time}ms`,
+              sql,
             },
           });
 
-          // dispatch the events
           emitter.dispatchEvent(execcomplete);
-
-          console.log(
-            `Query ${sql.substring(0, 100)} took`,
-            performance.now() - s
-          );
           return result;
         }
 

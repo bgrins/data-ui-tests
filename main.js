@@ -1,32 +1,20 @@
-import "./style.css";
+import "/style.css";
 import * as db from "./db.js";
-import * as d3 from "d3";
-import { pie } from "./charts/d3.js";
-import { dotplot } from "./charts/plot.js";
 import vanilla_table from "./tables/vanilla.js";
 
-console.log(pie, dotplot);
 
 let results = document.querySelector("#results");
-
-let chartID = 0;
-function createChartElement() {
-  const chart = document.createElement("div");
-  chart.id = `chart${chartID++}`;
-  results.appendChild(chart);
-  return chart;
-}
-pie({ querySelector: `#${createChartElement().id}` });
 
 function setStatus(text) {
   document.querySelector("#status").textContent = text;
 }
 
+setStatus("Initializing database");
 db.emitter.addEventListener("execcomplete", (e) => {
-  setStatus(`Query took ${e.detail.time}ms`);
+  console.log(e.detail);
+  setStatus(e.detail.message);
 });
 
-setStatus("Initializing database");
 // select ProductID, COUNT(*) from [Order Details] GROUP BY ProductID
 
 // if get param is set then don't eagerly load the worker
@@ -61,7 +49,7 @@ for (let { title, sql } of sheets) {
   let input = document.createElement("input");
   input.type = "radio";
   input.name = "query";
-  input.value = sql;
+  input.value = title;
   input.id = `query-${title}`;
   input.checked = title === "Categories";
   let label = document.createElement("label");
@@ -69,6 +57,13 @@ for (let { title, sql } of sheets) {
   label.htmlFor = `query-${title}`;
   document.querySelector("#query-options").append(input, label);
 }
+
+document.querySelector("#query-options").addEventListener("change", (e) => {
+  if (e.target.name === "query") {
+    document.querySelector("#query").value = e.target.value;
+  }
+});
+
 
 function create_grid(rows, columns) {
   const container = document.createElement("div");
