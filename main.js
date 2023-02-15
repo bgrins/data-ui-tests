@@ -1,6 +1,7 @@
 import "/style.css";
 import * as db from "./db.js";
-import vanilla_table from "./tables/vanilla.js";
+import lit_table from "./tables/lit.js";
+import vanilla_table from "./tables/lit.js";
 
 let results = document.querySelector("#results");
 let statuses = [];
@@ -53,11 +54,28 @@ const sheets = [
   { title: "Territories", sql: "select * from [Territories];" },
 ];
 
+function noop() {}
+const currentGrid = () => {
+  switch (document.querySelector(`[name="grid"]:checked`)?.value) {
+    case "none":
+      return noop;
+    case "lit":
+      return lit_table;
+    case "vanilla":
+      return vanilla_table;
+    default:
+      return null;
+  }
+};
+const queryOptions = () => [...document.querySelectorAll(`[name="query"]`)];
+const gridOptions = () => [...document.querySelectorAll(`[name="grid"]`)];
+
 const activeSheet = () =>
   sheets.find(
     (el) =>
       el.title == document.querySelector("input[name=query]:checked")?.value
   );
+
 for (let { title, sql } of sheets) {
   let input = document.createElement("input");
   input.type = "radio";
@@ -74,7 +92,7 @@ for (let { title, sql } of sheets) {
 document.querySelector("#query-options").addEventListener("change", (e) => {
   if (e.target.name === "query") {
     setStatus(`Sheet changed to ${e.target.value}`);
-    runQuery(activeSheet());
+    runQuery();
   }
 });
 
@@ -85,11 +103,22 @@ document.querySelector("#run").addEventListener("click", async () => {
     return;
   }
   running = true;
+
+  let permutations = [];
+  for (let grid of gridOptions()) {
+    for (let query of queryOptions()) {
+      permutations.push([grid, query]);
+    }
+  }
+
   setStatus(`Autorun started`);
   let start = performance.now();
-  for (let option of document.querySelectorAll("#query-options input")) {
-    option.checked = true;
-    await runQuery(activeSheet());
+  for (let [grid, query] of permutations) {
+    // Not actually clicking the option radios because we don't want it to respond
+    // to events, we're going to drive it ourselves
+    grid.checked = true;
+    query.checked = true;
+    await runQuery();
 
     await new Promise((resolve) => requestAnimationFrame(resolve));
     // TODO - the test seems more inconsistent and doesn't seem to paint cross-browser without this.
@@ -98,6 +127,9 @@ document.querySelector("#run").addEventListener("click", async () => {
       await new Promise((resolve) => requestAnimationFrame(resolve));
     }
   }
+  // for (let option of document.querySelectorAll("#query-options input")) {
+  //   option.checked = true;
+  // }
   setStatus(
     `All sheets rendered in ${Math.round(performance.now() - start)} ms`
   );
@@ -113,9 +145,11 @@ function create_grid(rows, columns) {
   const container = document.createElement("div");
   results.append(container);
   const data = [columns, ...rows];
-  vanilla_table({ container, data });
+  lit_table({ container, data });
 }
-async function runQuery({ title, sql }) {
+async function runQuery() {
+  let { title, sql } = activeSheet();
+  let renderer = currentGrid();
   results.textContent = "";
   let exec = await db.init();
   let result = await exec(sql);
@@ -125,18 +159,21 @@ async function runQuery({ title, sql }) {
     return;
   }
   let step = performance.now();
-  let grid = create_grid(resultRows, columnNames);
+
+  const container = document.createElement("div");
+  results.append(container);
+  const data = [columnNames, ...resultRows];
+  renderer({ container, data });
   setStatus(
     `Grid creation for ${title}: ${Math.round(performance.now() - step)} ms`
   );
   return {
     result,
-    grid,
   };
 }
 
 if (activeSheet()) {
-  runQuery(activeSheet());
+  runQuery();
 }
 
 setStatus("Initializing database");

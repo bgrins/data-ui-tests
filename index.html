@@ -11,9 +11,16 @@
       <h1>
         Data UI Tests
         <button id="run">Run</button>
-        <button id="show-logs">Logs</button>
+        <button id="show-logs">Logs<span id="status"></span></button>
       </h1>
-      <div id="status"></div>
+      <div id="grid-options" class="options">
+        <input id="grid-lit" checked name="grid" type="radio" value="lit" />
+        <label for="grid-lit">Lit Table</label>
+        <input id="grid-vanilla" name="grid" type="radio" value="vanilla" />
+        <label for="grid-vanilla">Vanilla Table</label>
+        <input id="grid-none" name="grid" type="radio" value="none" />
+        <label for="grid-none">No renderer</label>
+      </div>
     </header>
     <div id="app">
       <div id="results"></div>
@@ -24,7 +31,7 @@
     <dialog id="logs">
       <form method="dialog">
         <button>Close</button>
-        <code id="total-db-ms" style="float:right"></code>
+        <code id="total-db-ms" style="float: right"></code>
       </form>
       <pre id="log"></pre>
     </dialog>
