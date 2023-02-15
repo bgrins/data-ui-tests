@@ -5,6 +5,7 @@ import vanilla_table from "./tables/vanilla.js";
 let results = document.querySelector("#results");
 let statuses = [];
 const DEFAULT_SHEET = new URLSearchParams(window.location.search).get("sheet");
+const RAF = new URLSearchParams(window.location.search).has("raf");
 let AUTORUN = new URLSearchParams(window.location.search).has("autorun");
 
 function setStatus(text) {
@@ -26,9 +27,9 @@ document.querySelector("#show-logs").addEventListener("click", () => {
 db.emitter.addEventListener("execcomplete", (e) => {
   console.log(e.detail);
   setStatus(e.detail.message);
-  document.querySelector(
-    "#total-db-ms"
-  ).textContent = `${db.total_sql_time} total ms in db`;
+  document.querySelector("#total-db-ms").textContent = `${Math.round(
+    db.total_sql_time
+  )} total ms in db`;
 });
 
 const sheets = [
@@ -89,8 +90,17 @@ document.querySelector("#run").addEventListener("click", async () => {
   for (let option of document.querySelectorAll("#query-options input")) {
     option.checked = true;
     await runQuery(activeSheet());
+
+    await new Promise((resolve) => requestAnimationFrame(resolve));
+    // TODO - the test seems more inconsistent and doesn't seem to paint cross-browser without this.
+    // Is this a lit-html thing, or something else?
+    if (RAF) {
+      await new Promise((resolve) => requestAnimationFrame(resolve));
+    }
   }
-  setStatus(`All sheets rendered in ${Math.round(performance.now() - start)} ms`);
+  setStatus(
+    `All sheets rendered in ${Math.round(performance.now() - start)} ms`
+  );
   running = false;
   // First time run should open logs immediately if autorunning
   if (AUTORUN) {
@@ -117,9 +127,7 @@ async function runQuery({ title, sql }) {
   let step = performance.now();
   let grid = create_grid(resultRows, columnNames);
   setStatus(
-    `Grid creation for ${title}: ${Math.round(
-      performance.now() - step
-    )} ms`
+    `Grid creation for ${title}: ${Math.round(performance.now() - step)} ms`
   );
   return {
     result,
