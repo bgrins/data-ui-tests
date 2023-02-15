@@ -5,18 +5,25 @@
     <link rel="icon" type="image/svg+xml" href="./database.svg" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <title>Data UI tests</title>
-    <script type="module" crossorigin src="./assets/main-3b86f72b.js"></script>
-    <link rel="modulepreload" crossorigin href="./assets/style-cce34224.js">
-    <link rel="stylesheet" href="./assets/style-828a6952.css">
+    <script type="module" crossorigin src="./assets/main-b3cf047f.js"></script>
+    <link rel="modulepreload" crossorigin href="./assets/style-54e6365e.js">
+    <link rel="stylesheet" href="./assets/style-22266a75.css">
   </head>
   <body>
     <header>
       <h1>
         Data UI Tests
         <button id="run">Run</button>
-        <button id="show-logs">Logs</button>
+        <button id="show-logs">Logs<span id="status"></span></button>
       </h1>
-      <div id="status"></div>
+      <div id="grid-options" class="options">
+        <input id="grid-lit" checked name="grid" type="radio" value="lit" />
+        <label for="grid-lit">Lit Table</label>
+        <input id="grid-vanilla" name="grid" type="radio" value="vanilla" />
+        <label for="grid-vanilla">Vanilla Table</label>
+        <input id="grid-none" name="grid" type="radio" value="none" />
+        <label for="grid-none">No renderer</label>
+      </div>
     </header>
     <div id="app">
       <div id="results"></div>
@@ -27,7 +34,7 @@
     <dialog id="logs">
       <form method="dialog">
         <button>Close</button>
-        <code id="total-db-ms" style="float:right"></code>
+        <code id="total-db-ms" style="float: right"></code>
       </form>
       <pre id="log"></pre>
     </dialog>
