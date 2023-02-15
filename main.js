@@ -90,7 +90,7 @@ document.querySelector("#run").addEventListener("click", async () => {
     option.checked = true;
     await runQuery(activeSheet());
   }
-  setStatus(`All queries ran in ${Math.round(performance.now() - start)} ms`);
+  setStatus(`All sheets rendered in ${Math.round(performance.now() - start)} ms`);
   running = false;
   // First time run should open logs immediately if autorunning
   if (AUTORUN) {
@@ -114,7 +114,13 @@ async function runQuery({ title, sql }) {
   if (resultRows.length === 0) {
     return;
   }
+  let step = performance.now();
   let grid = create_grid(resultRows, columnNames);
+  setStatus(
+    `Grid creation for ${title}: ${Math.round(
+      performance.now() - step
+    )} ms`
+  );
   return {
     result,
     grid,
