@@ -154,6 +154,8 @@ document.querySelector("#run").addEventListener("click", async () => {
       await new Promise((resolve) => requestAnimationFrame(resolve));
     }
 
+    // Todo - is there a way to accurately measure something like
+    // el.scrollTop = el.scrollTopMax 
     if (step) {
       await new Promise((resolve) => setTimeout(resolve, step));
     }
