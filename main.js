@@ -128,6 +128,7 @@ document.querySelector("#run").addEventListener("click", async () => {
   running = true;
 
   let step = currentStep();
+  let totalStepTime = 0;
 
   let permutations = [];
   for (let grid of gridOptions()) {
@@ -156,13 +157,17 @@ document.querySelector("#run").addEventListener("click", async () => {
     }
 
     // Todo - is there a way to accurately measure something like
-    // el.scrollTop = el.scrollTopMax 
+    // el.scrollTop = el.scrollTopMax
     if (step) {
+      let stepStart = performance.now();
       await new Promise((resolve) => setTimeout(resolve, step));
+      totalStepTime += performance.now() - stepStart;
     }
   }
   setStatus(
-    `All sheets rendered in ${Math.round(performance.now() - start)} ms`
+    `All sheets rendered in ${Math.round(
+      performance.now() - start - totalStepTime
+    )} ms`
   );
   running = false;
   // First time run should open logs immediately if autorunning
