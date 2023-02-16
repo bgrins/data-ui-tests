@@ -99,6 +99,9 @@ h1 {
   flex-direction: column;
   display: flex;
 }
+#results > div {
+  flex: 1;
+}
 
 dialog {
   border: none !important;

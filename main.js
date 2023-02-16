@@ -2,12 +2,22 @@ import "/style.css";
 import * as db from "./db.js";
 import lit_table from "./tables/lit.js";
 import vanilla_table from "./tables/lit.js";
+import revo from "./tables/revo.js";
 
 let results = document.querySelector("#results");
 let statuses = [];
 const DEFAULT_SHEET = new URLSearchParams(window.location.search).get("sheet");
+const DEFAULT_GRID = new URLSearchParams(window.location.search).get("grid");
 const RAF = new URLSearchParams(window.location.search).has("raf");
 let AUTORUN = new URLSearchParams(window.location.search).has("autorun");
+
+if (DEFAULT_GRID) {
+  try {
+    document.querySelector(`[name=grid][value=${DEFAULT_GRID}]`).checked = true;
+  } catch (e) {
+    console.error(e);
+  }
+}
 
 function setStatus(text) {
   document.querySelector("#status").textContent = text;
@@ -63,6 +73,8 @@ const currentGrid = () => {
       return lit_table;
     case "vanilla":
       return vanilla_table;
+    case "revo":
+      return revo;
     default:
       return null;
   }
@@ -127,9 +139,6 @@ document.querySelector("#run").addEventListener("click", async () => {
       await new Promise((resolve) => requestAnimationFrame(resolve));
     }
   }
-  // for (let option of document.querySelectorAll("#query-options input")) {
-  //   option.checked = true;
-  // }
   setStatus(
     `All sheets rendered in ${Math.round(performance.now() - start)} ms`
   );
@@ -141,12 +150,6 @@ document.querySelector("#run").addEventListener("click", async () => {
   }
 });
 
-function create_grid(rows, columns) {
-  const container = document.createElement("div");
-  results.append(container);
-  const data = [columns, ...rows];
-  lit_table({ container, data });
-}
 async function runQuery() {
   let { title, sql } = activeSheet();
   let renderer = currentGrid();
