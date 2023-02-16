@@ -149,7 +149,8 @@ document.querySelector("#run").addEventListener("click", async () => {
 
     await new Promise((resolve) => requestAnimationFrame(resolve));
     // TODO - the test seems more inconsistent and doesn't seem to paint cross-browser without this.
-    // Is this a lit-html thing, or something else?
+    // Is this a lit-html thing, or something else? With revo even this second rAF doesn't seem to
+    // trigger a render... For now also have a `step` option to slow things down
     if (RAF) {
       await new Promise((resolve) => requestAnimationFrame(resolve));
     }
