@@ -5,10 +5,10 @@
     <link rel="icon" type="image/svg+xml" href="./database.svg" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <title>Data UI tests</title>
-    <script type="module" crossorigin src="./assets/main-b022019b.js"></script>
-    <link rel="modulepreload" crossorigin href="./assets/style-30edd77a.js">
+    <script type="module" crossorigin src="./assets/main-e73944d8.js"></script>
+    <link rel="modulepreload" crossorigin href="./assets/style-d1d563ef.js">
     <link rel="modulepreload" crossorigin href="./assets/index-6f753b3c-b061fad2.js">
-    <link rel="stylesheet" href="./assets/style-870856ad.css">
+    <link rel="stylesheet" href="./assets/style-a957514b.css">
     <link rel="stylesheet" href="./assets/index-af3243a3.css">
   </head>
   <body>
@@ -20,7 +20,15 @@
       </h1>
       <div class="options">
         <label
-          >Delay (ms) <input id="step" type="range" id="rows" min="0" max="100" value="50" step="10"
+          >Delay (ms)
+          <input
+            id="step"
+            type="range"
+            id="rows"
+            min="0"
+            max="100"
+            value="50"
+            step="10"
         /></label>
       </div>
       <div id="grid-options" class="options">
@@ -48,11 +56,13 @@
       <div id="query-options" class="options"></div>
     </footer>
     <dialog id="logs">
-      <form method="dialog">
-        <button>Close</button>
-        <code id="total-db-ms" style="float: right"></code>
-      </form>
-      <pre id="log"></pre>
+      <div class="dialog-click-capture">
+        <form method="dialog">
+          <button>Close</button>
+          <code id="total-db-ms" style="float: right"></code>
+        </form>
+        <pre id="log"></pre>
+      </div>
     </dialog>
     <script src="./sqlite3-worker1-promiser.js"></script>
     
