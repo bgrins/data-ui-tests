@@ -7,13 +7,13 @@ defineCustomElements();
 export default function ({ data, container }) {
   const grid = document.createElement("revo-grid");
   grid.classList.add("grid-component");
-  console.log(data);
+  // console.log(data);
 
   const columns = data[0].map((key) => ({
     prop: key,
     name: key,
     cellTemplate: (createElement, props) => {
-      console.log("Calling cell template");
+      // console.log("Calling cell template");
       if (props.data[props.rowIndex][props.prop] instanceof Uint8Array) {
         let url = URL.createObjectURL(
           new Blob([props.data[props.rowIndex][props.prop]], {
@@ -44,7 +44,7 @@ export default function ({ data, container }) {
 
     },
     scrollToTop() {
-      
+
     }
   }
 }

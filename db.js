@@ -39,7 +39,7 @@ export function init() {
             detail: {
               time,
               message: `Query \`${sql
-                .substring(0, 50)
+                .substring(0, 45)
                 .replace(/(\r\n|\n|\r)/gm, "")}\` took ${Math.round(time)}ms`,
               sql,
             },

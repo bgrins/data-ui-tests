@@ -5,6 +5,7 @@ import vanilla_table from "./tables/lit.js";
 import revo from "./tables/revo.js";
 import handsontable from "./tables/handsontable.js";
 
+let exportedResults = (window.exportedResults = []);
 let results = document.querySelector("#results");
 let statuses = [];
 const DEFAULT_SHEET = new URLSearchParams(window.location.search).get("sheet");
@@ -54,6 +55,7 @@ function setStatus(text) {
   document.querySelector("#status").textContent = text;
   statuses.push(text);
   document.querySelector("#logs pre").textContent = statuses.join("\n");
+  console.log(text);
 }
 
 document.addEventListener("keypress", (e) => {
@@ -67,7 +69,9 @@ document.querySelector("#show-logs").addEventListener("click", () => {
 });
 
 db.emitter.addEventListener("execcomplete", (e) => {
-  setStatus(e.detail.message);
+  if (!running) {
+    setStatus(e.detail.message);
+  }
   document.querySelector("#total-db-ms").textContent = `${Math.round(
     db.total_sql_time
   )} total ms in db`;
@@ -110,11 +114,11 @@ for (let { title, sql } of sheets) {
 document.addEventListener("change", (e) => {
   if (e.target.name === "query") {
     setStatus(`Sheet changed to ${e.target.value}`);
-    runQuery();
+    runQueryAndRender();
   }
   if (e.target.name === "grid") {
     setStatus(`Grid changed to ${e.target.value}`);
-    runQuery();
+    runQueryAndRender();
   }
 });
 
@@ -136,22 +140,28 @@ document.querySelector("#run").addEventListener("click", async () => {
     }
   }
 
+  let allMeasurements = [];
+
   setStatus(
     `Autorun started with ${permutations.length} permutations and step ${step}ms`
   );
-  let start = performance.now();
   performance.mark(`autorun-started`);
   for (let [grid, query] of permutations) {
-    performance.mark(`query-started: ${query.value} - ${grid.value}`);
     // Not actually clicking the option radios because we don't want it to respond
     // to events, we're going to drive it ourselves
     grid.checked = true;
     query.checked = true;
-    await runQuery();
-    performance.mark(`query-complete: ${query.value} - ${grid.value}`);
 
-    performance.mark(`raf: ${query.value} - ${grid.value}`);
+    let sheet = currentSheet();
+    performance.mark(`step-started: ${query.value} - ${grid.value}`);
+    let results = await runQuery(sheet);
+    performance.mark(`query-complete: ${query.value} - ${grid.value}`);
+    render(results);
+    performance.mark(`render-complete: ${query.value} - ${grid.value}`);
+
     await new Promise((resolve) => requestAnimationFrame(resolve));
+    performance.mark(`raf-complete: ${query.value} - ${grid.value}`);
+
     // TODO - the test seems more inconsistent and doesn't seem to paint cross-browser without this.
     // Is this a lit-html thing, or something else? With revo even this second rAF doesn't seem to
     // trigger a render... For now also have a `step` option to slow things down
@@ -168,61 +178,98 @@ document.querySelector("#run").addEventListener("click", async () => {
       totalStepTime += performance.now() - stepStart;
     }
 
-    const queryMeasure = performance.measure(
-      `query-started: ${query.value} - ${grid.value}`,
-      `query-complete: ${query.value} - ${grid.value}`
+    const queryMeasure = Math.round(
+      performance.measure(
+        "query-duration",
+        `step-started: ${query.value} - ${grid.value}`,
+        `query-complete: ${query.value} - ${grid.value}`
+      ).duration
     );
-    console.log(
-      `query: ${query.value} - ${grid.value}`,
-      `${queryMeasure.duration}ms`
+
+    const renderMeasure = Math.round(
+      performance.measure(
+        "render-duration",
+        `query-complete: ${query.value} - ${grid.value}`,
+        `render-complete: ${query.value} - ${grid.value}`
+      ).duration
     );
+    const rafMeasure = Math.round(
+      performance.measure(
+        "raf-duration",
+        `render-complete: ${query.value} - ${grid.value}`,
+        `raf-complete: ${query.value} - ${grid.value}`
+      ).duration
+    );
+    allMeasurements.push([queryMeasure, renderMeasure, rafMeasure]);
+    const measurements = [
+      `${query.value} - ${grid.value}`,
+      `query: ${queryMeasure}ms`,
+      `render: ${renderMeasure}ms`,
+      `raf: ${rafMeasure}ms`,
+    ]
+      .map((s, i) => s.padEnd(i == 0 ? 50 : 15, " "))
+      .join(" ");
+    setStatus(measurements);
   }
   performance.mark(`autorun-complete`);
-  // console.log(performance.measure(`autorun-complete`, `autorun-started`));
+
   setStatus(
-    `All sheets rendered in ${Math.round(
+    "---\n" +
+      [
+        `Totals`,
+        `query: ${allMeasurements.reduce((acc, [val]) => acc + val, 0)}ms`,
+        `render: ${allMeasurements.reduce((acc, [, val]) => acc + val, 0)}ms`,
+        `raf: ${allMeasurements.reduce((acc, [, , val]) => acc + val, 0)}ms`,
+      ]
+        .map((s, i) => s.padEnd(i == 0 ? 50 : 15, " "))
+        .join(" ")
+  );
+  setStatus(
+    `Autorun took ${Math.round(
       performance.measure(`autorun-complete`, `autorun-started`).duration -
         totalStepTime
     )} ms`
   );
   running = false;
-  // First time run should open logs immediately if autorunning
-  if (AUTORUN) {
-    document.querySelector("#show-logs").click();
-    AUTORUN = false;
-  }
+  document.querySelector("#show-logs").click();
 });
 
-async function runQuery() {
-  let { title, sql } = currentSheet();
-  let renderer = currentGrid();
-  results.textContent = "";
+// When a manual change happens we can just grab the current values, perform the query,
+// and render. The individual functions are needed for autorun to get finer grained
+// timing.
+async function runQueryAndRender() {
+  let sheet = currentSheet();
+  let result = await runQuery(sheet);
+  render(result, sheet);
+}
+
+async function runQuery(sheet) {
   let exec = await db.init();
-  let result = await exec(sql);
-  // console.log(title, result);
-  let { resultRows, columnNames } = result.result;
+  let result = await exec(sheet.sql);
+  return result.result;
+}
+
+function render({ resultRows, columnNames }, title) {
+  let step = performance.now();
+
+  results.textContent = "";
   if (resultRows.length === 0) {
     return;
   }
-  let step = performance.now();
-
   const container = document.createElement("div");
   results.append(container);
   const data = [columnNames, ...resultRows];
+  let renderer = currentGrid();
   renderer({ container, data });
-
-  if (renderer !== noop) {
+  if (title && renderer !== noop) {
     setStatus(
       `Grid creation for ${title}: ${Math.round(performance.now() - step)} ms`
     );
   }
-  return {
-    result,
-  };
 }
 
 if (currentSheet()) {
-  runQuery();
+  runQueryAndRender();
 }
 
 setStatus("Initializing database");
