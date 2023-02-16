@@ -10,13 +10,14 @@ let results = document.querySelector("#results");
 let statuses = [];
 const DEFAULT_SHEET = new URLSearchParams(window.location.search).get("sheet");
 const DEFAULT_GRID = new URLSearchParams(window.location.search).get("grid");
-const DEFAULT_STEP =
-  parseInt(new URLSearchParams(window.location.search).get("step")) || 0;
+const DEFAULT_STEP = parseInt(
+  new URLSearchParams(window.location.search).get("step")
+);
 const RAF = new URLSearchParams(window.location.search).has("raf");
 let AUTORUN = new URLSearchParams(window.location.search).has("autorun");
 
 const logDialog = document.querySelector("#logs");
-if (DEFAULT_STEP) {
+if (!isNaN(DEFAULT_STEP)) {
   document.querySelector("#step").value = DEFAULT_STEP;
 }
 if (DEFAULT_GRID) {
