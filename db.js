@@ -2,6 +2,7 @@ import northwind_create from "/sample_data/northwind.js";
 let db = null;
 export let total_sql_time = 0;
 
+const DEBUG = new URLSearchParams(window.location.search).has("debug");
 export let emitter = new EventTarget();
 export function init() {
   if (db) {
@@ -9,9 +10,9 @@ export function init() {
   }
   db = new Promise(async (resolve) => {
     const config = {
-      debug: false
-        ? undefined
-        : (...args) => console.debug("worker debug", ...args),
+      debug: DEBUG
+        ? (...args) => console.debug("worker debug", ...args)
+        : undefined,
       onunhandled: function (ev) {
         console.error("Unhandled worker message:", ev.data);
       },

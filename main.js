@@ -67,7 +67,6 @@ document.querySelector("#show-logs").addEventListener("click", () => {
 });
 
 db.emitter.addEventListener("execcomplete", (e) => {
-  console.log(e.detail);
   setStatus(e.detail.message);
   document.querySelector("#total-db-ms").textContent = `${Math.round(
     db.total_sql_time
@@ -141,13 +140,17 @@ document.querySelector("#run").addEventListener("click", async () => {
     `Autorun started with ${permutations.length} permutations and step ${step}ms`
   );
   let start = performance.now();
+  performance.mark(`autorun-started`);
   for (let [grid, query] of permutations) {
+    performance.mark(`query-started: ${query.value} - ${grid.value}`);
     // Not actually clicking the option radios because we don't want it to respond
     // to events, we're going to drive it ourselves
     grid.checked = true;
     query.checked = true;
     await runQuery();
+    performance.mark(`query-complete: ${query.value} - ${grid.value}`);
 
+    performance.mark(`raf: ${query.value} - ${grid.value}`);
     await new Promise((resolve) => requestAnimationFrame(resolve));
     // TODO - the test seems more inconsistent and doesn't seem to paint cross-browser without this.
     // Is this a lit-html thing, or something else? With revo even this second rAF doesn't seem to
@@ -156,6 +159,7 @@ document.querySelector("#run").addEventListener("click", async () => {
       await new Promise((resolve) => requestAnimationFrame(resolve));
     }
 
+    performance.mark(`raf: ${query.value} - ${grid.value}`);
     // Todo - is there a way to accurately measure something like
     // el.scrollTop = el.scrollTopMax
     if (step) {
@@ -163,10 +167,22 @@ document.querySelector("#run").addEventListener("click", async () => {
       await new Promise((resolve) => setTimeout(resolve, step));
       totalStepTime += performance.now() - stepStart;
     }
+
+    const queryMeasure = performance.measure(
+      `query-started: ${query.value} - ${grid.value}`,
+      `query-complete: ${query.value} - ${grid.value}`
+    );
+    console.log(
+      `query: ${query.value} - ${grid.value}`,
+      `${queryMeasure.duration}ms`
+    );
   }
+  performance.mark(`autorun-complete`);
+  // console.log(performance.measure(`autorun-complete`, `autorun-started`));
   setStatus(
     `All sheets rendered in ${Math.round(
-      performance.now() - start - totalStepTime
+      performance.measure(`autorun-complete`, `autorun-started`).duration -
+        totalStepTime
     )} ms`
   );
   running = false;
@@ -183,7 +199,7 @@ async function runQuery() {
   results.textContent = "";
   let exec = await db.init();
   let result = await exec(sql);
-  console.log(title, result);
+  // console.log(title, result);
   let { resultRows, columnNames } = result.result;
   if (resultRows.length === 0) {
     return;
