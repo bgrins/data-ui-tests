@@ -3,6 +3,7 @@ import * as db from "./db.js";
 import lit_table from "./tables/lit.js";
 import vanilla_table from "./tables/lit.js";
 import revo from "./tables/revo.js";
+import handsontable from "./tables/handsontable.js";
 
 let results = document.querySelector("#results");
 let statuses = [];
@@ -77,6 +78,8 @@ const currentGrid = () => {
       return vanilla_table;
     case "revo":
       return revo;
+    case "handsontable":
+      return handsontable;
     default:
       return null;
   }

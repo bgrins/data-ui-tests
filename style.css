@@ -85,15 +85,15 @@ h1 {
 #app {
   margin: 0 auto;
   width: 100%;
+  padding: 10px;
+  box-sizing: border-box;
   text-align: center;
   flex: 1;
   overflow: hidden;
 }
 
 #results {
-  box-sizing: border-box;
   margin: 0 auto;
-  padding: 10px;
   overflow-y: auto;
   height: 100%;
   flex-direction: column;
