@@ -8,6 +8,8 @@ let results = document.querySelector("#results");
 let statuses = [];
 const DEFAULT_SHEET = new URLSearchParams(window.location.search).get("sheet");
 const DEFAULT_GRID = new URLSearchParams(window.location.search).get("grid");
+const STEP =
+  parseInt(new URLSearchParams(window.location.search).get("step")) || 0;
 const RAF = new URLSearchParams(window.location.search).has("raf");
 let AUTORUN = new URLSearchParams(window.location.search).has("autorun");
 
@@ -141,6 +143,10 @@ document.querySelector("#run").addEventListener("click", async () => {
     // Is this a lit-html thing, or something else?
     if (RAF) {
       await new Promise((resolve) => requestAnimationFrame(resolve));
+    }
+
+    if (STEP) {
+      await new Promise((resolve) => setTimeout(resolve, STEP));
     }
   }
   setStatus(
