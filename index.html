@@ -13,6 +13,11 @@
         <button id="run">Run</button>
         <button id="show-logs">Logs<span id="status"></span></button>
       </h1>
+      <div class="options">
+        <label
+          >Delay (ms) <input id="step" type="range" id="rows" min="0" max="500" value="0"
+        /></label>
+      </div>
       <div id="grid-options" class="options">
         <input id="grid-lit" checked name="grid" type="radio" value="lit" />
         <label for="grid-lit">Lit Table</label>
@@ -20,7 +25,12 @@
         <label for="grid-vanilla">Vanilla Table</label>
         <input id="grid-revo" name="grid" type="radio" value="revo" />
         <label for="grid-revo">Revo Grid</label>
-        <input id="grid-handsontable" name="grid" type="radio" value="handsontable" />
+        <input
+          id="grid-handsontable"
+          name="grid"
+          type="radio"
+          value="handsontable"
+        />
         <label for="grid-handsontable">Handsontable</label>
         <input id="grid-none" name="grid" type="radio" value="none" />
         <label for="grid-none">No renderer</label>

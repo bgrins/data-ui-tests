@@ -66,13 +66,18 @@ h1 {
 }
 
 .options > label {
-  display: inline-block;
+  display: inline-flex;
   min-width: 60px;
   padding: 0 5px;
   text-align: center;
   cursor: pointer;
   font-weight: bold;
   text-transform: capitalize;
+}
+
+.options input[type="range"] {
+  width: 70px;
+  margin: 0 5px;
 }
 .options > input[type="radio"] {
   display: none;

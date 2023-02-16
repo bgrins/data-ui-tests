@@ -9,11 +9,14 @@ let results = document.querySelector("#results");
 let statuses = [];
 const DEFAULT_SHEET = new URLSearchParams(window.location.search).get("sheet");
 const DEFAULT_GRID = new URLSearchParams(window.location.search).get("grid");
-const STEP =
+const DEFAULT_STEP =
   parseInt(new URLSearchParams(window.location.search).get("step")) || 0;
 const RAF = new URLSearchParams(window.location.search).has("raf");
 let AUTORUN = new URLSearchParams(window.location.search).has("autorun");
 
+if (DEFAULT_STEP) {
+  document.querySelector("#step").value = DEFAULT_STEP;
+}
 if (DEFAULT_GRID) {
   try {
     document.querySelector(`[name=grid][value=${DEFAULT_GRID}]`).checked = true;
@@ -22,6 +25,31 @@ if (DEFAULT_GRID) {
   }
 }
 
+function noop() {}
+const queryOptions = () => [...document.querySelectorAll(`[name="query"]`)];
+const gridOptions = () => [...document.querySelectorAll(`[name="grid"]`)];
+const currentGrid = () => {
+  switch (document.querySelector(`[name="grid"]:checked`)?.value) {
+    case "none":
+      return noop;
+    case "lit":
+      return lit_table;
+    case "vanilla":
+      return vanilla_table;
+    case "revo":
+      return revo;
+    case "handsontable":
+      return handsontable;
+    default:
+      return null;
+  }
+};
+const currentStep = () => parseInt(document.querySelector("#step").value);
+const currentSheet = () =>
+  sheets.find(
+    (el) =>
+      el.title == document.querySelector("input[name=query]:checked")?.value
+  );
 function setStatus(text) {
   document.querySelector("#status").textContent = text;
   statuses.push(text);
@@ -67,32 +95,6 @@ const sheets = [
   { title: "Territories", sql: "select * from [Territories];" },
 ];
 
-function noop() {}
-const currentGrid = () => {
-  switch (document.querySelector(`[name="grid"]:checked`)?.value) {
-    case "none":
-      return noop;
-    case "lit":
-      return lit_table;
-    case "vanilla":
-      return vanilla_table;
-    case "revo":
-      return revo;
-    case "handsontable":
-      return handsontable;
-    default:
-      return null;
-  }
-};
-const queryOptions = () => [...document.querySelectorAll(`[name="query"]`)];
-const gridOptions = () => [...document.querySelectorAll(`[name="grid"]`)];
-
-const activeSheet = () =>
-  sheets.find(
-    (el) =>
-      el.title == document.querySelector("input[name=query]:checked")?.value
-  );
-
 for (let { title, sql } of sheets) {
   let input = document.createElement("input");
   input.type = "radio";
@@ -125,6 +127,8 @@ document.querySelector("#run").addEventListener("click", async () => {
   }
   running = true;
 
+  let step = currentStep();
+
   let permutations = [];
   for (let grid of gridOptions()) {
     for (let query of queryOptions()) {
@@ -132,7 +136,9 @@ document.querySelector("#run").addEventListener("click", async () => {
     }
   }
 
-  setStatus(`Autorun started`);
+  setStatus(
+    `Autorun started with ${permutations.length} permutations and step ${step}ms`
+  );
   let start = performance.now();
   for (let [grid, query] of permutations) {
     // Not actually clicking the option radios because we don't want it to respond
@@ -148,8 +154,8 @@ document.querySelector("#run").addEventListener("click", async () => {
       await new Promise((resolve) => requestAnimationFrame(resolve));
     }
 
-    if (STEP) {
-      await new Promise((resolve) => setTimeout(resolve, STEP));
+    if (step) {
+      await new Promise((resolve) => setTimeout(resolve, step));
     }
   }
   setStatus(
@@ -164,7 +170,7 @@ document.querySelector("#run").addEventListener("click", async () => {
 });
 
 async function runQuery() {
-  let { title, sql } = activeSheet();
+  let { title, sql } = currentSheet();
   let renderer = currentGrid();
   results.textContent = "";
   let exec = await db.init();
@@ -191,7 +197,7 @@ async function runQuery() {
   };
 }
 
-if (activeSheet()) {
+if (currentSheet()) {
   runQuery();
 }
 
