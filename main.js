@@ -15,6 +15,7 @@ const DEFAULT_STEP =
 const RAF = new URLSearchParams(window.location.search).has("raf");
 let AUTORUN = new URLSearchParams(window.location.search).has("autorun");
 
+const logDialog = document.querySelector("#logs");
 if (DEFAULT_STEP) {
   document.querySelector("#step").value = DEFAULT_STEP;
 }
@@ -58,6 +59,15 @@ function setStatus(text) {
   console.log(text);
 }
 
+document.addEventListener("click", (e) => {
+  console.log(e, e.target, logDialog);
+  // When the dialog is open, clicks outside of it will have the dialog as the target,
+  // and any click within will be consumed by the dialog-click-capture element.
+  if (e.target === logDialog) {
+    logDialog.close();
+  }
+});
+
 document.addEventListener("keypress", (e) => {
   if (e.key === "l") {
     document.querySelector("#show-logs").click();
@@ -65,7 +75,7 @@ document.addEventListener("keypress", (e) => {
 });
 
 document.querySelector("#show-logs").addEventListener("click", () => {
-  document.querySelector("#logs").showModal();
+  logDialog.showModal();
 });
 
 db.emitter.addEventListener("execcomplete", (e) => {

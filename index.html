@@ -15,7 +15,15 @@
       </h1>
       <div class="options">
         <label
-          >Delay (ms) <input id="step" type="range" id="rows" min="0" max="100" value="50" step="10"
+          >Delay (ms)
+          <input
+            id="step"
+            type="range"
+            id="rows"
+            min="0"
+            max="100"
+            value="50"
+            step="10"
         /></label>
       </div>
       <div id="grid-options" class="options">
@@ -43,11 +51,13 @@
       <div id="query-options" class="options"></div>
     </footer>
     <dialog id="logs">
-      <form method="dialog">
-        <button>Close</button>
-        <code id="total-db-ms" style="float: right"></code>
-      </form>
-      <pre id="log"></pre>
+      <div class="dialog-click-capture">
+        <form method="dialog">
+          <button>Close</button>
+          <code id="total-db-ms" style="float: right"></code>
+        </form>
+        <pre id="log"></pre>
+      </div>
     </dialog>
     <script src="/sqlite3-worker1-promiser.js"></script>
     <script type="module" src="/main.js"></script>
