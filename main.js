@@ -190,7 +190,7 @@ document.querySelector("#run").addEventListener("click", async () => {
 
     const queryMeasure = Math.round(
       performance.measure(
-        "query-duration",
+        `query-duration: ${query.value} - ${grid.value}`,
         `step-started: ${query.value} - ${grid.value}`,
         `query-complete: ${query.value} - ${grid.value}`
       ).duration
@@ -198,14 +198,14 @@ document.querySelector("#run").addEventListener("click", async () => {
 
     const renderMeasure = Math.round(
       performance.measure(
-        "render-duration",
+        `render-duration: ${query.value} - ${grid.value}`,
         `query-complete: ${query.value} - ${grid.value}`,
         `render-complete: ${query.value} - ${grid.value}`
       ).duration
     );
     const rafMeasure = Math.round(
       performance.measure(
-        "raf-duration",
+        `raf-duration: ${query.value} - ${grid.value}`,
         `render-complete: ${query.value} - ${grid.value}`,
         `raf-complete: ${query.value} - ${grid.value}`
       ).duration
