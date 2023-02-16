@@ -13,13 +13,13 @@ export default function ({ data, container }) {
     prop: key,
     name: key,
     cellTemplate: (createElement, props) => {
+      console.log("Calling cell template");
       if (props.data[props.rowIndex][props.prop] instanceof Uint8Array) {
         let url = URL.createObjectURL(
           new Blob([props.data[props.rowIndex][props.prop]], {
             type: "image/png",
           })
         );
-
         return createElement("img", {
           src: url,
         });
@@ -34,27 +34,17 @@ export default function ({ data, container }) {
     }
     return item;
   });
-  console.log(items);
 
-  // const columns = [
-  //   { prop: "name", name: "First column" },
-  //   {
-  //     prop: "details",
-  //     name: "Second column",
-  //     cellTemplate: (createElement, props) => {
-  //       return createElement(
-  //         "div",
-  //         {
-  //           style: { backgroundColor: "red" },
-  //           class: { "inner-cell": true },
-  //         },
-  //         props.model[props.prop] || ""
-  //       );
-  //     },
-  //   },
-  // ];
-  // const items = [{ name: "New item", details: "Item description" }];
   grid.columns = columns;
   grid.source = items;
   container.append(grid);
+
+  return {
+    scrollToBottom() {
+
+    },
+    scrollToTop() {
+      
+    }
+  }
 }

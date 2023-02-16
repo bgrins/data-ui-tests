@@ -101,9 +101,13 @@ for (let { title, sql } of sheets) {
   document.querySelector("#query-options").append(input, label);
 }
 
-document.querySelector("#query-options").addEventListener("change", (e) => {
+document.addEventListener("change", (e) => {
   if (e.target.name === "query") {
     setStatus(`Sheet changed to ${e.target.value}`);
+    runQuery();
+  }
+  if (e.target.name === "grid") {
+    setStatus(`Grid changed to ${e.target.value}`);
     runQuery();
   }
 });
