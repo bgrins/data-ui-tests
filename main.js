@@ -170,17 +170,14 @@ document.querySelector("#run").addEventListener("click", async () => {
     render(results);
     performance.mark(`render-complete: ${query.value} - ${grid.value}`);
 
-    await new Promise((resolve) => requestAnimationFrame(resolve));
-    performance.mark(`raf-complete: ${query.value} - ${grid.value}`);
-
     // TODO - the test seems more inconsistent and doesn't seem to paint cross-browser without this.
-    // Is this a lit-html thing, or something else? With revo even this second rAF doesn't seem to
-    // trigger a render... For now also have a `step` option to slow things down
+    // With revo it doesn't seem to actually render without this (or the `step` option which
+    // slows things down
     if (RAF) {
       await new Promise((resolve) => requestAnimationFrame(resolve));
     }
+    performance.mark(`raf-complete: ${query.value} - ${grid.value}`);
 
-    performance.mark(`raf: ${query.value} - ${grid.value}`);
     // Todo - is there a way to accurately measure something like
     // el.scrollTop = el.scrollTopMax
     if (step) {
@@ -223,21 +220,27 @@ document.querySelector("#run").addEventListener("click", async () => {
       `query: ${queryMeasure}ms`,
       `render: ${renderMeasure}ms`,
       `raf: ${rafMeasure}ms`,
-    ]
-      .map((s, i) => s.padEnd(i == 0 ? 50 : 15, " "))
-      .join(" ");
-    setStatus(measurements);
+    ].map((s, i) => s.padEnd(i == 0 ? 50 : 15, " "));
+    if (!RAF) {
+      measurements.pop();
+    }
+
+    setStatus(measurements.join(" "));
   }
   performance.mark(`autorun-complete`);
 
+  const totalMeasurements = [
+    `Totals`,
+    `query: ${allMeasurements.reduce((acc, [val]) => acc + val, 0)}ms`,
+    `render: ${allMeasurements.reduce((acc, [, val]) => acc + val, 0)}ms`,
+    `raf: ${allMeasurements.reduce((acc, [, , val]) => acc + val, 0)}ms`,
+  ];
+  if (!RAF) {
+    totalMeasurements.pop();
+  }
   setStatus(
     "-------\n" +
-      [
-        `Totals`,
-        `query: ${allMeasurements.reduce((acc, [val]) => acc + val, 0)}ms`,
-        `render: ${allMeasurements.reduce((acc, [, val]) => acc + val, 0)}ms`,
-        `raf: ${allMeasurements.reduce((acc, [, , val]) => acc + val, 0)}ms`,
-      ]
+      totalMeasurements
         .map((s, i) => s.padEnd(i == 0 ? 50 : 15, " "))
         .join(" ") +
       "\n-------"
@@ -248,7 +251,9 @@ document.querySelector("#run").addEventListener("click", async () => {
         totalStepTime
     )} ms${
       totalStepTime > 0
-        ? `. There were also ${Math.round(totalStepTime)}ms of actual timeouts between steps with ${
+        ? `. There were also ${Math.round(
+            totalStepTime
+          )}ms of actual timeouts between steps with ${
             step * permutations.length
           }ms expected.`
         : ""
