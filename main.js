@@ -186,7 +186,13 @@ document.querySelector("#run").addEventListener("click", async () => {
     if (step) {
       let stepStart = performance.now();
       await new Promise((resolve) => setTimeout(resolve, step));
-      totalStepTime += performance.now() - stepStart;
+      let stepTime = performance.now() - stepStart;
+      totalStepTime += stepTime;
+      // if (stepTime > step) {
+      //   console.log(
+      //     `Timeout took ${stepTime}ms, longer than the setTimeout ${step}ms`
+      //   );
+      // }
     }
 
     const queryMeasure = Math.round(
@@ -225,7 +231,7 @@ document.querySelector("#run").addEventListener("click", async () => {
   performance.mark(`autorun-complete`);
 
   setStatus(
-    "---\n" +
+    "-------\n" +
       [
         `Totals`,
         `query: ${allMeasurements.reduce((acc, [val]) => acc + val, 0)}ms`,
@@ -233,13 +239,20 @@ document.querySelector("#run").addEventListener("click", async () => {
         `raf: ${allMeasurements.reduce((acc, [, , val]) => acc + val, 0)}ms`,
       ]
         .map((s, i) => s.padEnd(i == 0 ? 50 : 15, " "))
-        .join(" ")
+        .join(" ") +
+      "\n-------"
   );
   setStatus(
     `Autorun took ${Math.round(
       performance.measure(`autorun-complete`, `autorun-started`).duration -
         totalStepTime
-    )} ms`
+    )} ms${
+      totalStepTime > 0
+        ? `. There were also ${Math.round(totalStepTime)}ms of actual timeouts between steps with ${
+            step * permutations.length
+          }ms expected.`
+        : ""
+    }`
   );
   running = false;
   document.querySelector("#show-logs").click();
