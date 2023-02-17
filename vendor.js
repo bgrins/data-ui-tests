@@ -62,6 +62,18 @@ async function get_northwind_data() {
   );
 }
 
+async function get_ribbon_data() {
+  const RESOURCE =
+    "https://raw.githubusercontent.com/plotly/datasets/master/3d-ribbon.json";
+  let resp = await fetch(RESOURCE);
+  let text = await resp.text();
+  await Deno.writeTextFile(
+    "sample_data/3d_ribbon.js",
+    `export default ${JSON.stringify(JSON.parse(text))}`
+  );
+}
+
 await get_athlete_data();
 await get_revenue_by_music_format_data();
 await get_northwind_data();
+await get_ribbon_data();

@@ -5,6 +5,7 @@ import * as sparkline from "/charts/sparkline.js";
 import * as chartjs from "/charts/chartjs.js";
 import * as echarts from "/charts/echarts.js";
 import * as recharts from "/charts/recharts.jsx";
+// import * as plotly from "/charts/plotly.js";
 
 let results = document.querySelector("#results");
 const RATIO = 0.625;
@@ -47,6 +48,7 @@ const ALL_CHARTS = [
   },
   { mod: echarts, charts: [echarts.bar] },
   { mod: recharts, charts: [recharts.line, recharts.treemap/*, recharts.bubble*/] },
+  // { mod: plotly, charts: [plotly.ribbon] },
 ];
 
 function createCharts() {
