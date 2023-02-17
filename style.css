@@ -149,6 +149,8 @@ dialog > .dialog-click-capture {
 #results.charts > div {
   max-height: var(--chart-height);
   max-width: var(--chart-width);
+  /* overflow: hidden;
+  position: relative; */
 }
 /* .chart {
   display: inline-flex;

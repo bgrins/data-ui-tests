@@ -13,10 +13,11 @@
 
   */
 
+// Installing plotly directly is broken with vite ([ERROR] Could not resolve "buffer/"), so use plotly.js-dist-min
 // See https://community.plotly.com/t/how-to-initiate-and-build-a-plotly-js-project-using-vite/65701/2
 
 import figure from "/sample_data/3d_ribbon.js";
-import Plotly from "plotly.js";
+import Plotly from "plotly.js-dist-min";
 
 // https://plotly.com/javascript/ribbon-plots/
 
@@ -117,12 +118,11 @@ export function ribbon({ width, height }) {
     title: "Ribbon Plot",
 
     showlegend: false,
-
     autosize: true,
 
-    width: 600,
+    width,
 
-    height: 600,
+    height,
 
     scene: {
       xaxis: { title: "Sample #" },
