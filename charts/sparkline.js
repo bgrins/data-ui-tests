@@ -3,80 +3,6 @@ import sparkline from "@fnando/sparkline";
 // https://github.com/fnando/sparkline
 // https://codepen.io/fnando/full/KyZLLV/
 
-/* 
-svg + svg {
-  margin-left: 20px;
-}
-
-.sparkline {
-  fill: none;
-}
-
-.sparkline--red {
-  stroke: #dc2b33;
-}
-
-.sparkline--red.sparkline--filled {
-  fill: rgba(220, 43, 51, 0.3);
-}
-
-.sparkline--blue {
-  stroke: #3d85de;
-}
-
-.sparkline--blue.sparkline--filled {
-  fill: rgba(61, 133, 222, 0.3);
-}
-
-.sparkline--green {
-  stroke: #4c9b4c;
-}
-
-.sparkline--green.sparkline--filled {
-  fill: rgba(76, 155, 76, 0.3);
-}
-
-.sparkline--gray {
-  stroke: #777;
-}
-
-.sparkline--gray.sparkline--filled {
-  fill: rgba(119, 119, 119, 0.3);
-}
-
-.sparkline--orange {
-  stroke: #e36023;
-}
-
-.sparkline--orange.sparkline--filled {
-  fill: rgba(227, 96, 35, 0.3);
-}
-
-.sparkline--purple {
-  stroke: #573585;
-}
-
-.sparkline--purple.sparkline--filled {
-  fill: rgba(87, 53, 133, 0.3);
-}
-
-.sparkline--yellow {
-  stroke: #fdd700;
-}
-
-.sparkline--yellow.sparkline--filled {
-  fill: rgba(253, 215, 0, 0.3);
-}
-
-.sparkline--pink {
-  stroke: #db3b9e;
-}
-
-.sparkline--pink.sparkline--filled {
-  fill: rgba(219, 59, 158, 0.3);
-}
-*/
-
 const colors = {
   red: "#dc2b33",
   blue: "#3d85de",
@@ -88,20 +14,29 @@ const colors = {
   pink: "#db3b9e",
 };
 
-function randNumbers() {
-  var numbers = [];
+const series_one = [
+  17, 12, 6, 17, 18, 23, 20, 15, 17, 14, 5, 20, 23, 6, 6, 23, 19, 6, 17, 12, 8,
+  22, 6, 9, 18, 23, 16, 20, 25, 12, 7, 14, 16, 12, 17, 21, 18, 13, 8, 8, 22, 17,
+  9, 19, 13, 6, 23, 11, 11, 9, 22, 16,
+];
+const series_two = [
+  25, 21, 13, 10, 19, 10, 24, 20, 8, 21, 23, 9, 9, 6, 23, 16, 9, 8, 22, 20, 17,
+  20, 18, 22, 11, 14, 18, 23, 16, 20, 17, 19, 9, 9, 8, 7, 17, 16, 22, 14, 8, 21,
+  6, 9, 19, 5, 9, 12, 20, 11, 8, 24,
+];
+// function randNumbers() {
+//   var numbers = [];
 
-  for (var i = 0; i < 20; i += 1) {
-    numbers.push(Math.random() * 50);
-  }
+//   for (var i = 0; i < 52; i += 1) {
+//     numbers.push(Math.round(Math.random() * 20 + 5));
+//   }
 
-  return numbers;
-}
+//   return numbers;
+// }
 
-export function random({ width, height }) {
-
-  var keys = Object.keys(colors);
-  let color = keys[Math.floor(Math.random() * keys.length)];
+function spark({ width, height }, series, color) {
+  // var keys = Object.keys(colors);
+  // let color = keys[Math.floor(Math.random() * keys.length)];
   const svg = document.createElementNS("http://www.w3.org/2000/svg", "svg");
   svg.setAttribute("stroke-width", "3");
   svg.setAttribute("stroke", color);
@@ -110,12 +45,14 @@ export function random({ width, height }) {
   svg.setAttribute("height", height);
   svg.setAttribute("class", "sparkline");
 
-  sparkline(svg, randNumbers());
+  sparkline(svg, series);
   return svg;
-  // return sparkline(
-  //   sparkline(svg, width, height),
-  //   randNumbers()
-  // );
+}
+export function one({ width, height }) {
+  return spark({ width, height }, series_one, colors.blue);
+}
+export function two({ width, height }) {
+  return spark({ width, height }, series_two, colors.red);
 }
 
 // setInterval(function() {

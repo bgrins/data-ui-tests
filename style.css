@@ -139,10 +139,16 @@ dialog > .dialog-click-capture {
   color: rgba(0, 0, 0, 0.8);
 }
 #results.charts {
-  --chart-size: 300px;
+  --chart-width: auto;
+  --chart-height: auto;
   display: grid;
   grid-gap: 0.875rem;
-  grid-template-columns: repeat(auto-fill, minmax(var(--chart-size), 5fr));
+  grid-template-columns: repeat(auto-fill, minmax(var(--chart-width), 5fr));
+}
+
+#results.charts > div {
+  max-height: var(--chart-height);
+  max-width: var(--chart-width);
 }
 /* .chart {
   display: inline-flex;

@@ -11,8 +11,10 @@ let results = document.querySelector("#results");
 const RATIO = 0.625;
 
 // Todo this should actually recreate all the charts since the size is set in SVG
-const setChartSize = (size) => {
-  results.style.setProperty("--chart-size", `${size}px`);
+const setChartSize = () => {
+  const { width, height } = getChartWidthHeight();
+  results.style.setProperty("--chart-width", `${width}px`);
+  results.style.setProperty("--chart-height", `${height}px`);
   results.textContent = "";
   createCharts();
 };
@@ -23,7 +25,7 @@ const getChartWidthHeight = () => ({
 });
 document.addEventListener("input", (e) => {
   if (e.target.id === "chart-size") {
-    setChartSize(e.target.value);
+    setChartSize();
   }
 });
 
@@ -40,14 +42,17 @@ const ALL_CHARTS = [
   { mod: plot, charts: [plot.rect, plot.dot, plot.rectY, plot.plot] },
   {
     mod: sparkline,
-    charts: [sparkline.random, sparkline.random],
+    charts: [sparkline.one, sparkline.two],
   },
   {
     mod: chartjs,
     charts: [chartjs.bar, chartjs.polarArea, chartjs.radar, chartjs.scatter],
   },
   { mod: echarts, charts: [echarts.bar] },
-  { mod: recharts, charts: [recharts.line, recharts.treemap/*, recharts.bubble*/] },
+  {
+    mod: recharts,
+    charts: [recharts.line, recharts.treemap /*, recharts.bubble*/],
+  },
   // { mod: plotly, charts: [plotly.ribbon] },
 ];
 
@@ -70,4 +75,4 @@ function createCharts() {
   // })
 }
 
-setChartSize(document.querySelector("#chart-size").value);
+setChartSize();
