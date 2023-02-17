@@ -3,6 +3,7 @@ import "/style.css";
 import * as plot from "/charts/plot.js";
 import * as sparkline from "/charts/sparkline.js";
 import * as chartjs from "/charts/chartjs.js";
+import * as echarts from "/charts/echarts.js";
 
 let results = document.querySelector("#results");
 const RATIO = 0.625;
@@ -37,12 +38,13 @@ const ALL_CHARTS = [
   { mod: plot, charts: [plot.rect, plot.dot, plot.rectY, plot.plot] },
   {
     mod: sparkline,
-    charts: [
-      sparkline.random,
-      sparkline.random,
-    ],
+    charts: [sparkline.random, sparkline.random],
   },
-  { mod: chartjs, charts: [chartjs.bar, chartjs.polarArea, chartjs.radar, chartjs.scatter] },
+  {
+    mod: chartjs,
+    charts: [chartjs.bar, chartjs.polarArea, chartjs.radar, chartjs.scatter],
+  },
+  { mod: echarts, charts: [echarts.bar] },
 ];
 
 function createCharts() {
