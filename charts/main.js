@@ -2,6 +2,7 @@ import "/style.css";
 // import { musicRevenue } from "/charts/revenue_by_music_format.js";
 import * as plot from "/charts/plot.js";
 import * as sparkline from "/charts/sparkline.js";
+import * as chartjs from "/charts/chartjs.js";
 
 let results = document.querySelector("#results");
 const RATIO = 0.625;
@@ -32,34 +33,27 @@ function createChartElement() {
   return chart;
 }
 
-function createCharts() {
-  createChartElement().append(
-    plot.rect({
-      ...getChartWidthHeight(),
-    })
-  );
-  createChartElement().append(
-    plot.dot({
-      ...getChartWidthHeight(),
-    })
-  );
-  createChartElement().append(
-    plot.rectY({
-      ...getChartWidthHeight(),
-    })
-  );
-  createChartElement().append(
-    plot.plot({
-      ...getChartWidthHeight(),
-    })
-  );
+const ALL_CHARTS = [
+  { mod: plot, charts: [plot.rect, plot.dot, plot.rectY, plot.plot] },
+  {
+    mod: sparkline,
+    charts: [
+      sparkline.random,
+      sparkline.random,
+    ],
+  },
+  { mod: chartjs, charts: [chartjs.bar, chartjs.polarArea, chartjs.radar, chartjs.scatter] },
+];
 
-  for (let i = 0; i < 4; i++) {
-    createChartElement().append(
-      sparkline.random({
-        ...getChartWidthHeight(),
-      })
-    );
+function createCharts() {
+  for (let { mod, charts } of ALL_CHARTS) {
+    for (let chart of charts) {
+      createChartElement().append(
+        chart({
+          ...getChartWidthHeight(),
+        })
+      );
+    }
   }
 
   // This isn't working
