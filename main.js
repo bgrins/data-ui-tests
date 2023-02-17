@@ -61,7 +61,6 @@ function setStatus(text) {
 }
 
 document.addEventListener("click", (e) => {
-  console.log(e, e.target, logDialog);
   // When the dialog is open, clicks outside of it will have the dialog as the target,
   // and any click within will be consumed by the dialog-click-capture element.
   if (e.target === logDialog) {

@@ -8,9 +8,13 @@
   </head>
   <body>
     <header>
-      <h1>Data UI Tests <button id="run">Run</button></h1>
+      <h1>
+        Data UI Tests <button id="run">Run</button>
+        <button id="show-logs">Logs<span id="status"></span></button>
+      </h1>
       <label style="display: flex"
-        >Size <input type="range" min="10" max="1000" value="300" id="chart-size"
+        >Size
+        <input type="range" min="10" max="1000" value="300" id="chart-size"
       /></label>
       <div id="status"></div>
     </header>
@@ -18,6 +22,16 @@
       <div class="charts" id="results"></div>
     </div>
     <footer></footer>
+
+    <dialog id="logs">
+      <div class="dialog-click-capture">
+        <form method="dialog">
+          <button>Close</button>
+          <code id="total-db-ms" style="float: right"></code>
+        </form>
+        <pre id="log"></pre>
+      </div>
+    </dialog>
     <script type="module" src="/charts/main.js"></script>
   </body>
 </html>
