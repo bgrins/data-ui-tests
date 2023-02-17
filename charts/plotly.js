@@ -13,6 +13,8 @@
 
   */
 
+// See https://community.plotly.com/t/how-to-initiate-and-build-a-plotly-js-project-using-vite/65701/2
+
 import figure from "/sample_data/3d_ribbon.js";
 import Plotly from "plotly.js";
 
