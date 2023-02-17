@@ -10,6 +10,8 @@ import * as plotly from "/charts/plotly.js";
 let results = document.querySelector("#results");
 const RATIO = 0.625;
 
+const DEFAULT_WIDTH = new URLSearchParams(window.location.search).get("width");
+
 // Todo this should actually recreate all the charts since the size is set in SVG
 const setChartSize = () => {
   const { width, height } = getChartWidthHeight();
@@ -75,4 +77,7 @@ function createCharts() {
   // })
 }
 
+if (DEFAULT_WIDTH) {
+  document.querySelector("#chart-size").value = DEFAULT_WIDTH;
+}
 setChartSize();
