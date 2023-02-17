@@ -46,7 +46,7 @@ const ALL_CHARTS = [
     charts: [chartjs.bar, chartjs.polarArea, chartjs.radar, chartjs.scatter],
   },
   { mod: echarts, charts: [echarts.bar] },
-  { mod: recharts, charts: [recharts.line, recharts.bubble] },
+  { mod: recharts, charts: [recharts.line, recharts.treemap/*, recharts.bubble*/] },
 ];
 
 function createCharts() {
