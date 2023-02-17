@@ -1,4 +1,4 @@
-import sparkline from "@fnando/sparkline";
+import * as sparkline from "@fnando/sparkline/dist/sparkline.commonjs2";
 
 // https://github.com/fnando/sparkline
 // https://codepen.io/fnando/full/KyZLLV/
@@ -14,6 +14,14 @@ const colors = {
   pink: "#db3b9e",
 };
 
+// Generated the series with:
+// function randNumbers() {
+//   var numbers = [];
+//   for (var i = 0; i < 52; i += 1) {
+//     numbers.push(Math.round(Math.random() * 20 + 5));
+//   }
+//   return numbers;
+// }
 const series_one = [
   17, 12, 6, 17, 18, 23, 20, 15, 17, 14, 5, 20, 23, 6, 6, 23, 19, 6, 17, 12, 8,
   22, 6, 9, 18, 23, 16, 20, 25, 12, 7, 14, 16, 12, 17, 21, 18, 13, 8, 8, 22, 17,
@@ -24,15 +32,6 @@ const series_two = [
   20, 18, 22, 11, 14, 18, 23, 16, 20, 17, 19, 9, 9, 8, 7, 17, 16, 22, 14, 8, 21,
   6, 9, 19, 5, 9, 12, 20, 11, 8, 24,
 ];
-// function randNumbers() {
-//   var numbers = [];
-
-//   for (var i = 0; i < 52; i += 1) {
-//     numbers.push(Math.round(Math.random() * 20 + 5));
-//   }
-
-//   return numbers;
-// }
 
 function spark({ width, height }, series, color) {
   // var keys = Object.keys(colors);
@@ -45,7 +44,7 @@ function spark({ width, height }, series, color) {
   svg.setAttribute("height", height);
   svg.setAttribute("class", "sparkline");
 
-  sparkline(svg, series);
+  sparkline.sparkline(svg, series);
   return svg;
 }
 export function one({ width, height }) {

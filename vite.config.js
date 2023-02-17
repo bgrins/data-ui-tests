@@ -6,6 +6,7 @@ export default defineConfig({
   plugins: [react()],
   base: "./",
   build: {
+    // minify: false,
     rollupOptions: {
       input: {
         main: resolve(__dirname, 'index.html'),
