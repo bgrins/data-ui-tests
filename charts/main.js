@@ -4,6 +4,7 @@ import * as plot from "/charts/plot.js";
 import * as sparkline from "/charts/sparkline.js";
 import * as chartjs from "/charts/chartjs.js";
 import * as echarts from "/charts/echarts.js";
+import * as recharts from "/charts/recharts.jsx";
 
 let results = document.querySelector("#results");
 const RATIO = 0.625;
@@ -16,8 +17,8 @@ const setChartSize = (size) => {
 };
 const getChartSize = () => document.querySelector("#chart-size").value;
 const getChartWidthHeight = () => ({
-  width: getChartSize(),
-  height: getChartSize() * RATIO,
+  width: Math.floor(getChartSize()),
+  height: Math.floor(getChartSize() * RATIO),
 });
 document.addEventListener("input", (e) => {
   if (e.target.id === "chart-size") {
@@ -45,6 +46,7 @@ const ALL_CHARTS = [
     charts: [chartjs.bar, chartjs.polarArea, chartjs.radar, chartjs.scatter],
   },
   { mod: echarts, charts: [echarts.bar] },
+  { mod: recharts, charts: [recharts.line, recharts.bubble] },
 ];
 
 function createCharts() {
