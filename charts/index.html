@@ -5,9 +5,9 @@
     <link rel="icon" type="image/svg+xml" href="../database.svg" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <title>Data UI tests</title>
-    <script type="module" crossorigin src="../assets/charts-392e0bc5.js"></script>
-    <link rel="modulepreload" crossorigin href="../assets/_commonjs-dynamic-modules-d0856337.js">
-    <link rel="stylesheet" href="../assets/_commonjs-dynamic-modules-e05ecf1b.css">
+    <script type="module" crossorigin src="../assets/charts-f8ba000c.js"></script>
+    <link rel="modulepreload" crossorigin href="../assets/_commonjs-dynamic-modules-a16fc6cf.js">
+    <link rel="stylesheet" href="../assets/_commonjs-dynamic-modules-147d69e0.css">
   </head>
   <body>
     <header>
@@ -15,10 +15,18 @@
         Data UI Tests <button id="run">Run</button>
         <button id="show-logs">Logs<span id="status"></span></button>
       </h1>
-      <label style="display: flex"
-        >Size
-        <input type="range" min="10" max="1000" value="300" id="chart-size"
-      /></label>
+      <div class="options">
+        <label style="display: flex"
+          >Size
+          <input
+            type="range"
+            min="200"
+            max="800"
+            value="200"
+            step="200"
+            id="chart-size"
+        /></label>
+      </div>
       <div id="status"></div>
     </header>
     <div id="app">
@@ -30,7 +38,7 @@
       <div class="dialog-click-capture">
         <form method="dialog">
           <button>Close</button>
-          <code id="total-db-ms" style="float: right"></code>
+          <code id="log-summary" style="float: right"></code>
         </form>
         <pre id="log"></pre>
       </div>
