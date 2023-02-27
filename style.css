@@ -69,7 +69,7 @@ h1 {
   display: inline-flex;
   min-width: 60px;
   padding: 0 5px;
-  text-align: center;
+  justify-content: center;
   cursor: pointer;
   font-weight: bold;
   text-transform: capitalize;

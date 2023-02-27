@@ -7,61 +7,42 @@ import * as echarts from "/charts/echarts.js";
 import * as recharts from "/charts/recharts.jsx";
 import * as plotly from "/charts/plotly.js";
 
-let results = document.querySelector("#results");
-const RATIO = 0.625;
-
+const LOG_DIALOG = document.querySelector("#logs");
+const RESULTS_ELEMENT = document.querySelector("#results");
+const CHART_WIDTH_HEIGHT_RATIO = 0.625;
+const DEFAULT_LIB = new URLSearchParams(window.location.search).get("lib");
 const DEFAULT_WIDTH = new URLSearchParams(window.location.search).get("width");
 let AUTORUN = new URLSearchParams(window.location.search).has("autorun");
-
-const setChartSize = () => {
-  const { width, height } = getChartWidthHeight();
-
-  setStatus(`Setting chart size ${width}x${height}`);
-  results.style.setProperty("--chart-width", `${width}px`);
-  results.style.setProperty("--chart-height", `${height}px`);
-  results.textContent = "";
-  createCharts();
-};
-const getChartSize = () => document.querySelector("#chart-size").value;
-const getChartWidthHeight = () => ({
-  width: Math.floor(getChartSize()),
-  height: Math.floor(getChartSize() * RATIO),
-});
-document.addEventListener("input", (e) => {
-  if (e.target.id === "chart-size") {
-    setChartSize();
-  }
-});
-
-let chartID = 0;
-function createChartElement() {
-  const chart = document.createElement("div");
-  chart.id = `chart${chartID++}`;
-  chart.classList.add("chart");
-  results.append(chart);
-  return chart;
-}
-
-const ALL_CHARTS = [
-  { mod: plot, charts: [plot.rect, plot.dot, plot.rectY, plot.plot] },
-  {
-    mod: sparkline,
+const ALL_CHARTS = {
+  plot: {
+    charts: [plot.rect, plot.dot, plot.rectY, plot.plot],
+  },
+  sparkline: {
     charts: [sparkline.one, sparkline.two],
   },
-  {
-    mod: chartjs,
+  chartjs: {
     charts: [chartjs.bar, chartjs.polarArea, chartjs.radar, chartjs.scatter],
   },
-  { mod: echarts, charts: [echarts.bar] },
-  {
-    mod: recharts,
+  echarts: { charts: [echarts.bar] },
+  recharts: {
     charts: [recharts.line, recharts.treemap, recharts.bubble],
   },
-  { mod: plotly, charts: [plotly.ribbon] },
-];
+  // Todo is there a good way to attach simulated events to a given chart (like the ribbon chart, which
+  // typically uses mouse interaction to zoom etc).
+  plotly: { charts: [plotly.ribbon] },
+};
 
-function createCharts() {
-  for (let { mod, charts } of ALL_CHARTS) {
+const currentLib = () =>
+  ALL_CHARTS[document.querySelector("input[name=lib]:checked")?.value];
+
+function renderCurrent() {
+  const { width, height } = getChartWidthHeight();
+  RESULTS_ELEMENT.style.setProperty("--chart-width", `${width}px`);
+  RESULTS_ELEMENT.style.setProperty("--chart-height", `${height}px`);
+  RESULTS_ELEMENT.textContent = "";
+
+  let current = currentLib() ? [currentLib()] : Object.values(ALL_CHARTS);
+  for (let { charts } of current) {
     for (let chart of charts) {
       createChartElement().append(
         chart({
@@ -72,20 +53,123 @@ function createCharts() {
   }
 }
 
-const logDialog = document.querySelector("#logs");
+function createChartElement() {
+  createChartElement.id = (createChartElement.id || 0) + 1;
+  const chart = document.createElement("div");
+  chart.id = `chart${createChartElement.id}`;
+  chart.classList.add("chart");
+  RESULTS_ELEMENT.append(chart);
+  return chart;
+}
+
+const getChartSize = () => document.querySelector("#chart-size").value;
+const getChartWidthHeight = () => ({
+  width: Math.floor(getChartSize()),
+  height: Math.floor(getChartSize() * CHART_WIDTH_HEIGHT_RATIO),
+});
+
+const getChartingLibraries = () => [
+  ...document.querySelectorAll(`[name="lib"]`),
+];
+const getSizes = () => {
+  // Matches <input type="range" min="200" max="1000" value="200" step="200" id="chart-size" />
+  return [200, 400, 600, 800];
+};
+
 const statuses = [];
 function setStatus(text) {
   document.querySelector("#status").textContent = text;
   statuses.push(text);
-  logDialog.querySelector("pre").textContent = statuses.join("\n");
+  LOG_DIALOG.querySelector("pre").textContent = statuses.join("\n");
   console.log(text);
 }
+
+function createOptions() {
+  if (DEFAULT_WIDTH) {
+    document.querySelector("#chart-size").value = DEFAULT_WIDTH;
+  }
+
+  let libOptions = document.createElement("div");
+  libOptions.id = "lib-options";
+  libOptions.classList.add("options");
+  document.querySelector("header").append(libOptions);
+
+  for (let title in ALL_CHARTS) {
+    let input = document.createElement("input");
+    input.type = "radio";
+    input.name = "lib";
+    input.value = title;
+    input.id = `lib-${title}`;
+    input.checked = title === DEFAULT_LIB;
+    let label = document.createElement("label");
+    label.textContent = title;
+    label.htmlFor = `lib-${title}`;
+    libOptions.append(input, label);
+  }
+}
+
+let running = false;
+async function run() {
+  if (running) {
+    console.log("Currently running, ignoring request");
+    return;
+  }
+  running = true;
+
+  let permutations = [];
+  for (let library of getChartingLibraries()) {
+    for (let size of getSizes()) {
+      permutations.push([library, size]);
+    }
+  }
+  performance.mark(`autorun-started`);
+
+  for (let [library, size] of permutations) {
+    await new Promise((r) => requestAnimationFrame(r));
+    let libraryName = library.value;
+    performance.mark(`autorun-${libraryName}-${size}-started`);
+    document.querySelector("#chart-size").value = size;
+    library.checked = true;
+    renderCurrent();
+    performance.mark(`autorun-${libraryName}-${size}-complete`);
+    setStatus(
+      `${libraryName}-${size} took ${Math.round(
+        performance.measure(
+          `autorun-${libraryName}-${size}-complete`,
+          `autorun-${libraryName}-${size}-started`
+        ).duration
+      )}ms`
+    );
+
+    await new Promise((r) => requestAnimationFrame(r));
+  }
+
+  performance.mark(`autorun-complete`);
+  setStatus(
+    `Autorun took ${Math.round(
+      performance.measure(`autorun-complete`, `autorun-started`).duration
+    )} ms`
+  );
+  running = false;
+  document.querySelector("#show-logs").click();
+}
+
+document.addEventListener("change", (e) => {
+  if (e.target.id === "chart-size") {
+    setStatus(`Size changed to ${e.target.value}`);
+    renderCurrent();
+  }
+  if (e.target.name === "lib") {
+    setStatus(`Lib changed to ${e.target.value}`);
+    renderCurrent();
+  }
+});
 
 document.addEventListener("click", (e) => {
   // When the dialog is open, clicks outside of it will have the dialog as the target,
   // and any click within will be consumed by the dialog-click-capture element.
-  if (e.target === logDialog) {
-    logDialog.close();
+  if (e.target === LOG_DIALOG) {
+    LOG_DIALOG.close();
   }
 });
 
@@ -96,170 +180,17 @@ document.addEventListener("keypress", (e) => {
 });
 
 document.querySelector("#show-logs").addEventListener("click", () => {
-  logDialog.showModal();
+  LOG_DIALOG.showModal();
 });
 
-let running = false;
-document.querySelector("#run").addEventListener("click", async () => {
-  if (running) {
-    console.log("Currently running, ignoring request");
-    return;
-  }
-  running = true;
-  performance.mark(`autorun-started`);
+document.querySelector("#run").addEventListener("click", run);
 
-  for (let size of [100, 200, 400, 800, 1000]) {
-    await new Promise((r) => requestAnimationFrame(r));
-    performance.mark(`autorun-${size}-started`);
-    document.querySelector("#chart-size").value = size;
-    setChartSize();
-    performance.mark(`autorun-${size}-complete`);
-    setStatus(
-      `${size} took ${Math.round(
-        performance.measure(
-          `autorun-${size}-complete`,
-          `autorun-${size}-started`
-        ).duration
-      )}ms`
-    );
-  }
-
-  performance.mark(`autorun-complete`);
-  setStatus(
-    `Autorun took ${Math.round(
-      performance.measure(`autorun-complete`, `autorun-started`).duration
-    )} ms`
-  );
-  // let step = currentStep();
-  // let totalStepTime = 0;
-
-  // let permutations = [];
-  // for (let grid of gridOptions()) {
-  //   for (let query of queryOptions()) {
-  //     permutations.push([grid, query]);
-  //   }
-  // }
-
-  // let allMeasurements = [];
-
-  // setStatus(
-  //   `Autorun started with ${permutations.length} permutations and step ${step}ms`
-  // );
-  // performance.mark(`autorun-started`);
-  // for (let [grid, query] of permutations) {
-  //   // Not actually clicking the option radios because we don't want it to respond
-  //   // to events, we're going to drive it ourselves
-  //   grid.checked = true;
-  //   query.checked = true;
-
-  //   let sheet = currentSheet();
-  //   performance.mark(`step-started: ${query.value} - ${grid.value}`);
-  //   let results = await runQuery(sheet);
-  //   performance.mark(`query-complete: ${query.value} - ${grid.value}`);
-  //   render(results);
-  //   performance.mark(`render-complete: ${query.value} - ${grid.value}`);
-
-  //   // TODO - the test seems more inconsistent and doesn't seem to paint cross-browser without this.
-  //   // With revo it doesn't seem to actually render without this (or the `step` option which
-  //   // slows things down
-  //   if (RAF) {
-  //     await new Promise((resolve) => requestAnimationFrame(resolve));
-  //   }
-  //   performance.mark(`raf-complete: ${query.value} - ${grid.value}`);
-
-  //   // Todo - is there a way to accurately measure something like
-  //   // el.scrollTop = el.scrollTopMax
-  //   if (step) {
-  //     let stepStart = performance.now();
-  //     await new Promise((resolve) => setTimeout(resolve, step));
-  //     let stepTime = performance.now() - stepStart;
-  //     totalStepTime += stepTime;
-  //     // if (stepTime > step) {
-  //     //   console.log(
-  //     //     `Timeout took ${stepTime}ms, longer than the setTimeout ${step}ms`
-  //     //   );
-  //     // }
-  //   }
-
-  //   const queryMeasure = Math.round(
-  //     performance.measure(
-  //       `query-duration: ${query.value} - ${grid.value}`,
-  //       `step-started: ${query.value} - ${grid.value}`,
-  //       `query-complete: ${query.value} - ${grid.value}`
-  //     ).duration
-  //   );
-
-  //   const renderMeasure = Math.round(
-  //     performance.measure(
-  //       `render-duration: ${query.value} - ${grid.value}`,
-  //       `query-complete: ${query.value} - ${grid.value}`,
-  //       `render-complete: ${query.value} - ${grid.value}`
-  //     ).duration
-  //   );
-  //   const rafMeasure = Math.round(
-  //     performance.measure(
-  //       `raf-duration: ${query.value} - ${grid.value}`,
-  //       `render-complete: ${query.value} - ${grid.value}`,
-  //       `raf-complete: ${query.value} - ${grid.value}`
-  //     ).duration
-  //   );
-  //   allMeasurements.push([queryMeasure, renderMeasure, rafMeasure]);
-  //   const measurements = [
-  //     `${query.value} - ${grid.value}`,
-  //     `query: ${queryMeasure}ms`,
-  //     `render: ${renderMeasure}ms`,
-  //     `raf: ${rafMeasure}ms`,
-  //   ].map((s, i) => s.padEnd(i == 0 ? 50 : 15, " "));
-  //   if (!RAF) {
-  //     measurements.pop();
-  //   }
-
-  //   setStatus(measurements.join(" "));
-  // }
-  // performance.mark(`autorun-complete`);
-
-  // const totalMeasurements = [
-  //   `Totals`,
-  //   `query: ${allMeasurements.reduce((acc, [val]) => acc + val, 0)}ms`,
-  //   `render: ${allMeasurements.reduce((acc, [, val]) => acc + val, 0)}ms`,
-  //   `raf: ${allMeasurements.reduce((acc, [, , val]) => acc + val, 0)}ms`,
-  // ];
-  // if (!RAF) {
-  //   totalMeasurements.pop();
-  // }
-  // setStatus(
-  //   "-------\n" +
-  //     totalMeasurements
-  //       .map((s, i) => s.padEnd(i == 0 ? 50 : 15, " "))
-  //       .join(" ") +
-  //     "\n-------"
-  // );
-  // setStatus(
-  //   `Autorun took ${Math.round(
-  //     performance.measure(`autorun-complete`, `autorun-started`).duration -
-  //       totalStepTime
-  //   )} ms${
-  //     totalStepTime > 0
-  //       ? `. There were also ${Math.round(
-  //           totalStepTime
-  //         )}ms of actual timeouts between steps with ${
-  //           step * permutations.length
-  //         }ms expected.`
-  //       : ""
-  //   }`
-  // );
-  running = false;
-  document.querySelector("#show-logs").click();
-});
-
-if (DEFAULT_WIDTH) {
-  document.querySelector("#chart-size").value = DEFAULT_WIDTH;
-}
+createOptions();
 
 setTimeout(() => {
   if (AUTORUN) {
     document.querySelector("#run").click();
   } else {
-    setChartSize();
+    renderCurrent();
   }
 }, 0);
