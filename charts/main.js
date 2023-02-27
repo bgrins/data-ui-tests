@@ -15,6 +15,8 @@ let AUTORUN = new URLSearchParams(window.location.search).has("autorun");
 
 const setChartSize = () => {
   const { width, height } = getChartWidthHeight();
+
+  setStatus(`Setting chart size ${width}x${height}`);
   results.style.setProperty("--chart-width", `${width}px`);
   results.style.setProperty("--chart-height", `${height}px`);
   results.textContent = "";
@@ -68,19 +70,14 @@ function createCharts() {
       );
     }
   }
-
-  // This isn't working
-  // musicRevenue({
-  //   querySelector: `#${createChartElement().id}`,
-  //   size: getChartSize(),
-  //   ...getChartWidthHeight(),
-  // })
 }
 
+const logDialog = document.querySelector("#logs");
+const statuses = [];
 function setStatus(text) {
   document.querySelector("#status").textContent = text;
   statuses.push(text);
-  document.querySelector("#logs pre").textContent = statuses.join("\n");
+  logDialog.querySelector("pre").textContent = statuses.join("\n");
   console.log(text);
 }
 
@@ -102,7 +99,6 @@ document.querySelector("#show-logs").addEventListener("click", () => {
   logDialog.showModal();
 });
 
-const logDialog = document.querySelector("#logs");
 let running = false;
 document.querySelector("#run").addEventListener("click", async () => {
   if (running) {
@@ -110,18 +106,30 @@ document.querySelector("#run").addEventListener("click", async () => {
     return;
   }
   running = true;
+  performance.mark(`autorun-started`);
 
-  for (let size of [100, 200, 400, 800, 1000, 400]) {
+  for (let size of [100, 200, 400, 800, 1000]) {
     await new Promise((r) => requestAnimationFrame(r));
+    performance.mark(`autorun-${size}-started`);
     document.querySelector("#chart-size").value = size;
     setChartSize();
-    await new Promise((r) =>
-      requestAnimationFrame(() => {
-        setTimeout(r, 1000);
-      })
+    performance.mark(`autorun-${size}-complete`);
+    setStatus(
+      `${size} took ${Math.round(
+        performance.measure(
+          `autorun-${size}-complete`,
+          `autorun-${size}-started`
+        ).duration
+      )}ms`
     );
   }
 
+  performance.mark(`autorun-complete`);
+  setStatus(
+    `Autorun took ${Math.round(
+      performance.measure(`autorun-complete`, `autorun-started`).duration
+    )} ms`
+  );
   // let step = currentStep();
   // let totalStepTime = 0;
 
@@ -241,7 +249,7 @@ document.querySelector("#run").addEventListener("click", async () => {
   //   }`
   // );
   running = false;
-  // document.querySelector("#show-logs").click();
+  document.querySelector("#show-logs").click();
 });
 
 if (DEFAULT_WIDTH) {
