@@ -13,7 +13,6 @@ const RATIO = 0.625;
 const DEFAULT_WIDTH = new URLSearchParams(window.location.search).get("width");
 let AUTORUN = new URLSearchParams(window.location.search).has("autorun");
 
-// Todo this should actually recreate all the charts since the size is set in SVG
 const setChartSize = () => {
   const { width, height } = getChartWidthHeight();
   results.style.setProperty("--chart-width", `${width}px`);
@@ -248,8 +247,11 @@ document.querySelector("#run").addEventListener("click", async () => {
 if (DEFAULT_WIDTH) {
   document.querySelector("#chart-size").value = DEFAULT_WIDTH;
 }
-setChartSize();
 
-if (AUTORUN) {
-  document.querySelector("#run").click();
-}
+setTimeout(() => {
+  if (AUTORUN) {
+    document.querySelector("#run").click();
+  } else {
+    setChartSize();
+  }
+}, 0);
