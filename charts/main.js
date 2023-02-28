@@ -13,6 +13,19 @@ const CHART_WIDTH_HEIGHT_RATIO = 0.625;
 const DEFAULT_LIB = new URLSearchParams(window.location.search).get("lib");
 const DEFAULT_WIDTH = new URLSearchParams(window.location.search).get("width");
 let AUTORUN = new URLSearchParams(window.location.search).has("autorun");
+
+/**
+ * List of all charts we want to draw.
+ *
+ * key: name of the library. This is used as a key in this script, but nothing more.
+ * value: {
+ *    charts: Array<ChartingFunction>
+ * }
+ *
+ * ChartingFunction is a function: ({ width, height }) => HTMLElement
+ * which configures a render operation and returning the HTML element where the
+ * render happens.
+ */
 const ALL_CHARTS = {
   plot: {
     charts: [plot.rect, plot.dot, plot.rectY, plot.plot],
