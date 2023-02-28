@@ -16,7 +16,6 @@ export function bar({ width, height }) {
     { year: 2016, count: 28 },
   ];
 
-  console.log("bar", width, height, canvas);
   new Chart(canvas, {
     type: "bar",
     data: {
