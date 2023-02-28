@@ -28,6 +28,9 @@ export function bar({ width, height }) {
         },
       ],
     },
+    options: {
+      animation: false,
+    },
   });
 
   return canvas;
@@ -53,6 +56,9 @@ export function polarArea({ width, height }) {
   const config = {
     type: "polarArea",
     data,
+    options: {
+      animation: false,
+    },
   };
 
   const canvas = document.createElement("canvas");
@@ -101,6 +107,7 @@ export function scatter({ width, height }) {
           position: "bottom",
         },
       },
+      animation: false,
     },
   };
   const canvas = document.createElement("canvas");
@@ -156,6 +163,7 @@ export function radar({ width, height }) {
           borderWidth: 3,
         },
       },
+      animation: false,
     },
   };
   const canvas = document.createElement("canvas");

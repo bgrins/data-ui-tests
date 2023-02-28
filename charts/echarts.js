@@ -14,6 +14,7 @@ export function bar({ width, height }) {
     title: {
       text: "ECharts Getting Started Example",
     },
+    animation: false,
     tooltip: {},
     xAxis: {
       data: ["shirt", "cardigan", "chiffon", "pants", "heels", "socks"],

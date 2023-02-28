@@ -71,7 +71,7 @@ export function line({ width, height }) {
   ];
   return mount(
     <LineChart width={width} height={height} data={data}>
-      <Line type="monotone" dataKey="pv" stroke="#8884d8" strokeWidth={2} />
+      <Line type="monotone" dataKey="pv" stroke="#8884d8" strokeWidth={2} isAnimationActive={false} />
     </LineChart>
   );
 }
@@ -260,7 +260,7 @@ export function bubble({ width, height }) {
             wrapperStyle={{ zIndex: 100 }}
             content={renderTooltip}
           />
-          <Scatter data={data01} fill="#8884d8" />
+          <Scatter data={data01} fill="#8884d8" isAnimationActive={false} />
         </ScatterChart>
       </ResponsiveContainer>
 
@@ -299,7 +299,7 @@ export function bubble({ width, height }) {
             wrapperStyle={{ zIndex: 100 }}
             content={renderTooltip}
           />
-          <Scatter data={data02} fill="#8884d8" />
+          <Scatter data={data02} fill="#8884d8" isAnimationActive={false} />
         </ScatterChart>
       </ResponsiveContainer>
 
@@ -338,7 +338,7 @@ export function bubble({ width, height }) {
             wrapperStyle={{ zIndex: 100 }}
             content={renderTooltip}
           />
-          <Scatter data={data01} fill="#8884d8" />
+          <Scatter data={data01} fill="#8884d8" isAnimationActive={false} />
         </ScatterChart>
       </ResponsiveContainer>
 
@@ -377,7 +377,7 @@ export function bubble({ width, height }) {
             wrapperStyle={{ zIndex: 100 }}
             content={renderTooltip}
           />
-          <Scatter data={data02} fill="#8884d8" />
+          <Scatter data={data02} fill="#8884d8" isAnimationActive={false} />
         </ScatterChart>
       </ResponsiveContainer>
 
@@ -416,7 +416,7 @@ export function bubble({ width, height }) {
             wrapperStyle={{ zIndex: 100 }}
             content={renderTooltip}
           />
-          <Scatter data={data01} fill="#8884d8" />
+          <Scatter data={data01} fill="#8884d8" isAnimationActive={false} />
         </ScatterChart>
       </ResponsiveContainer>
 
@@ -455,7 +455,7 @@ export function bubble({ width, height }) {
             wrapperStyle={{ zIndex: 100 }}
             content={renderTooltip}
           />
-          <Scatter data={data02} fill="#8884d8" />
+          <Scatter data={data02} fill="#8884d8" isAnimationActive={false} />
         </ScatterChart>
       </ResponsiveContainer>
 
@@ -493,7 +493,7 @@ export function bubble({ width, height }) {
             wrapperStyle={{ zIndex: 100 }}
             content={renderTooltip}
           />
-          <Scatter data={data01} fill="#8884d8" />
+          <Scatter data={data01} fill="#8884d8" isAnimationActive={false} />
         </ScatterChart>
       </ResponsiveContainer>
     </div>
@@ -712,6 +712,7 @@ export function treemap({ width, height }) {
       dataKey="size"
       stroke="#fff"
       fill="#8884d8"
+      isAnimationActive={false}
       content={<CustomizedContent colors={COLORS} />}
     />
   );
