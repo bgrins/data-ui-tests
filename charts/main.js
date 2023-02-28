@@ -52,7 +52,7 @@ const ALL_CHARTS = {
 const currentLib = () =>
   ALL_CHARTS[document.querySelector("input[name=lib]:checked")?.value];
 
-function renderCurrent() {
+async function renderCurrent() {
   const { width, height } = getChartWidthHeight();
   RESULTS_ELEMENT.style.setProperty("--chart-width", `${width}px`);
   RESULTS_ELEMENT.style.setProperty("--chart-height", `${height}px`);
@@ -62,7 +62,7 @@ function renderCurrent() {
   for (let { charts } of current) {
     for (let chart of charts) {
       createChartElement().append(
-        chart({
+        await chart({
           ...getChartWidthHeight(),
         })
       );
@@ -147,7 +147,7 @@ async function run() {
     performance.mark(`autorun-${libraryName}-${size}-started`);
     document.querySelector("#chart-size").value = size;
     library.checked = true;
-    renderCurrent();
+    await renderCurrent();
     performance.mark(`autorun-${libraryName}-${size}-complete`);
     setStatus(
       `${libraryName}-${size} took ${Math.round(

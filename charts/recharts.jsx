@@ -17,11 +17,14 @@ import React, { PureComponent } from "react";
 import ReactDOM from "react-dom/client";
 
 function mount(element) {
-  const container = document.createElement("div");
-  ReactDOM.createRoot(container).render(
-    <React.StrictMode>{element}</React.StrictMode>
-  );
-  return container;
+  return new Promise((resolve) => {
+    const container = document.createElement("div");
+    ReactDOM.createRoot(container).render(
+      <React.StrictMode>
+        <div ref={() => resolve(container)}>{element}</div>
+      </React.StrictMode>
+    );
+  });
 }
 
 export function line({ width, height }) {
