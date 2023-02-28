@@ -31,7 +31,9 @@ const ALL_CHARTS = {
     charts: [plot.rect, plot.dot, plot.rectY, plot.plot],
   },
   sparkline: {
-    charts: [sparkline.one, sparkline.two],
+    charts: Array(12).fill(0).map((_, i) => {
+      return i % 2 ? sparkline.two : sparkline.one;
+    }),
   },
   chartjs: {
     charts: [chartjs.bar, chartjs.polarArea, chartjs.radar, chartjs.scatter],
