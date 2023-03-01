@@ -71,7 +71,13 @@ export function line({ width, height }) {
   ];
   return mount(
     <LineChart width={width} height={height} data={data}>
-      <Line type="monotone" dataKey="pv" stroke="#8884d8" strokeWidth={2} isAnimationActive={false} />
+      <Line
+        type="monotone"
+        dataKey="pv"
+        stroke="#8884d8"
+        strokeWidth={2}
+        isAnimationActive={false}
+      />
     </LineChart>
   );
 }
