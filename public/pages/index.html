@@ -2,7 +2,8 @@
 <html lang="en">
   <head>
     <meta charset="UTF-8" />
-    <link rel="icon" type="image/svg+xml" href="/database.svg" />
+    <link rel="icon" type="image/svg+xml" href="layout.svg" />
+    <link rel="stylesheet" type="text/css" href="../../style.css" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <style>
       iframe {
@@ -16,6 +17,7 @@
   <body>
     <header>
       <h1>Layout tests</h1>
+      <button id="run">Run</button>
     </header>
     <div id="app">
       <div id="results">
@@ -57,5 +59,16 @@
         <pre id="log"></pre>
       </div>
     </dialog>
+    <script>
+      document.querySelector("#run").addEventListener("click", async () => {
+        const results = document.querySelector("#results");
+        const iframes = results.querySelectorAll("iframe");
+        for (const iframe of iframes) {
+          iframe.contentDocument.body.click();
+          await new Promise((resolve) => iframe.contentWindow.requestAnimationFrame(resolve));
+          await new Promise((resolve) => setTimeout(resolve, 1000));
+        }
+      });
+    </script>
   </body>
 </html>
