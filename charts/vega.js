@@ -1,8 +1,11 @@
 // https://echarts.apache.org/handbook/en/basics/import
 import * as vega from "vega";
 
+
 async function fetchSpec(name) {
-  const res = await fetch(`./vega-definitions/${name}.vg.json`);
+  // URL is needed for vite builds to work https://vitejs.dev/guide/assets.html#new-url-url-import-meta-url
+  const url = new URL(`./vega-definitions/${name}.vg.json`, import.meta.url).href
+  const res = await fetch(url);
   return res.json();
 }
 
