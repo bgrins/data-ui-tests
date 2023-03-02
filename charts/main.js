@@ -1,4 +1,3 @@
-
 // import { musicRevenue } from "/charts/revenue_by_music_format.js";
 import * as plot from "/charts/plot.js";
 import * as sparkline from "/charts/sparkline.js";
@@ -6,6 +5,7 @@ import * as chartjs from "/charts/chartjs.js";
 import * as echarts from "/charts/echarts.js";
 import * as recharts from "/charts/recharts.jsx";
 import * as plotly from "/charts/plotly.js";
+import * as vega from "/charts/vega.js";
 
 const LOG_DIALOG = document.querySelector("#logs");
 const RESULTS_ELEMENT = document.querySelector("#results");
@@ -43,6 +43,14 @@ const ALL_CHARTS = {
   echarts: { charts: [echarts.bar] },
   recharts: {
     charts: [recharts.line, recharts.treemap, recharts.bubble],
+  },
+  vega: {
+    charts: [
+      vega.barCanvas,
+      vega.barSvg,
+      vega.airportsSvg,
+      vega.airportsCanvas,
+    ],
   },
   // Todo is there a good way to attach simulated events to a given chart (like the ribbon chart, which
   // typically uses mouse interaction to zoom etc).
@@ -148,6 +156,7 @@ async function run() {
     document.querySelector("#chart-size").value = size;
     library.checked = true;
     await renderCurrent();
+    // Force a reflow
     performance.mark(`autorun-${libraryName}-${size}-complete`);
     setStatus(
       `${libraryName}-${size} took ${Math.round(
