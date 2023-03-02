@@ -14,17 +14,21 @@
 </style>
 <script>
   document.addEventListener("click", () => {
-    let start = performance.now();
-    performance.mark("table-toggle-start");
-    document.body.classList.toggle("shown-table");
-    let syncEnd = performance.now();
-    let asyncStart = performance.now();
-    setTimeout(() => {
-      let asyncEnd = performance.now();
-      performance.mark("table-toggle-end");
-      performance.measure("table-toggle", "table-toggle-start", "table-toggle-end");
-      console.log(`Toggle took ${syncEnd - start}ms sync and ${asyncEnd - asyncStart}ms async`);
-    }, 0)
+    requestAnimationFrame(() => {
+      let start = performance.now();
+      performance.mark("table-toggle-start");
+
+      document.body.classList.toggle("shown-table");
+      
+      let syncEnd = performance.now();
+      let asyncStart = performance.now();
+      setTimeout(() => {
+        let asyncEnd = performance.now();
+        performance.mark("table-toggle-end");
+        performance.measure("table-toggle", "table-toggle-start", "table-toggle-end");
+        console.log(`Toggle took ${syncEnd - start}ms sync and ${asyncEnd - asyncStart}ms async`);
+      }, 0)
+    })
   });
 </script>
 
