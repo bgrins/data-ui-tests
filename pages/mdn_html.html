@@ -6,8 +6,8 @@
 
 
 <style>
-  body:not(.shown-table) > * { display: none !important; }
-  body:not(.shown-table)::after {
+  :root:not(.shown-for-test) body { display: none !important; }
+  :root:not(.shown-for-test)::after {
     content: "Click to reveal content";
     text-align: center;
     font-weight: bold;
@@ -22,7 +22,7 @@
       let start = performance.now();
       performance.mark("table-toggle-start");
 
-      document.body.classList.toggle("shown-table");
+      document.documentElement.classList.toggle("shown-for-test");
       
       let syncEnd = performance.now();
       let asyncStart = performance.now();
