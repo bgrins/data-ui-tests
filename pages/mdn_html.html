@@ -20,7 +20,7 @@
   document.addEventListener("click", () => {
     requestAnimationFrame(() => {
       let start = performance.now();
-      performance.mark("table-toggle-start");
+      performance.mark("show-toggle-start");
 
       document.documentElement.classList.toggle("shown-for-test");
       
@@ -28,8 +28,8 @@
       let asyncStart = performance.now();
       setTimeout(() => {
         let asyncEnd = performance.now();
-        performance.mark("table-toggle-end");
-        performance.measure("table-toggle", "table-toggle-start", "table-toggle-end");
+        performance.mark("show-toggle-end");
+        performance.measure("show-toggle", "show-toggle-start", "show-toggle-end");
         console.log(`Toggle took ${syncEnd - start}ms sync and ${asyncEnd - asyncStart}ms async`);
       }, 0)
     });
