@@ -1,0 +1,57 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <link rel="icon" type="image/svg+xml" href="../chart.svg" />
+    <link rel="stylesheet" type="text/css" href="../style.css" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <style>
+      iframe {
+        width: 800px;
+        height: 600px;
+        margin: 0;
+      }
+    </style>
+    <title>Data UI tests</title>
+    <script type="module" crossorigin src="../assets/layout-3b11c570.js"></script>
+    <link rel="modulepreload" crossorigin href="../assets/modulepreload-polyfill-ec808ebb.js">
+  </head>
+  <body>
+    <header>
+      <h1>Layout tests</h1>
+      <button id="run">Run</button>
+    </header>
+    <div id="app">
+      <div id="results">
+        <table>
+          <tr>
+            <th>es5.html</th>
+            <td><iframe src="/pages/es5.html"></iframe></td>
+          </tr>
+          <tr>
+            <th>es6.html</th>
+            <td><iframe src="/pages/es6.html"></iframe></td>
+          </tr>
+          <tr>
+            <th>es2016plus.html</th>
+            <td><iframe src="/pages/es2016plus.html"></iframe></td>
+          </tr>
+          <tr>
+            <th>html.html</th>
+            <td><iframe src="/pages/html.html"></iframe></td>
+          </tr>
+          <tr>
+            <th>mdn.html</th>
+            <td><iframe src="/pages/mdn.html"></iframe></td>
+          </tr>
+          <tr>
+            <th>mdn_html.html</th>
+            <td><iframe src="/pages/mdn_html.html"></iframe></td>
+          </tr>
+        </table>
+      </div>
+    </div>
+    <footer></footer>
+    
+  </body>
+</html>
