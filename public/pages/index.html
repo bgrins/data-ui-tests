@@ -1,0 +1,61 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <link rel="icon" type="image/svg+xml" href="/database.svg" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <style>
+      iframe {
+        width: 800px;
+        height: 600px;
+        margin: 0;
+      }
+    </style>
+    <title>Data UI tests</title>
+  </head>
+  <body>
+    <header>
+      <h1>Layout tests</h1>
+    </header>
+    <div id="app">
+      <div id="results">
+        <table>
+          <tr>
+            <th>es5.html</th>
+            <td><iframe src="es5.html"></iframe></td>
+          </tr>
+          <tr>
+            <th>es6.html</th>
+            <td><iframe src="es6.html"></iframe></td>
+          </tr>
+          <tr>
+            <th>es2016plus.html</th>
+            <td><iframe src="es2016plus.html"></iframe></td>
+          </tr>
+          <tr>
+            <th>html.html</th>
+            <td><iframe src="html.html"></iframe></td>
+          </tr>
+          <tr>
+            <th>mdn.html</th>
+            <td><iframe src="mdn.html"></iframe></td>
+          </tr>
+          <tr>
+            <th>mdn_html.html</th>
+            <td><iframe src="mdn_html.html"></iframe></td>
+          </tr>
+        </table>
+      </div>
+    </div>
+    <footer></footer>
+    <dialog id="logs">
+      <div class="dialog-click-capture">
+        <form method="dialog">
+          <button>Close</button>
+          <code id="total-db-ms" style="float: right"></code>
+        </form>
+        <pre id="log"></pre>
+      </div>
+    </dialog>
+  </body>
+</html>
