@@ -1,4 +1,4 @@
-import "/style.css";
+
 import * as db from "./db.js";
 import lit_table from "./tables/lit.js";
 import vanilla_table from "./tables/lit.js";

@@ -11,6 +11,7 @@ export default defineConfig({
       input: {
         main: resolve(__dirname, 'index.html'),
         charts: resolve(__dirname, 'charts/index.html'),
+        layout: resolve(__dirname, 'layout/index.html'),
       },
     },
   },

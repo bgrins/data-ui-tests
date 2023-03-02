@@ -1,4 +1,4 @@
-import "/style.css";
+
 // import { musicRevenue } from "/charts/revenue_by_music_format.js";
 import * as plot from "/charts/plot.js";
 import * as sparkline from "/charts/sparkline.js";
