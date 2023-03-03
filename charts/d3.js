@@ -1,25 +1,6 @@
 import * as d3 from "d3";
 import { hexbin as d3Hexbin } from "d3-hexbin";
-
-async function fetchUrl(file) {
-  const url = new URL(`./data/${file}`, import.meta.url).href;
-  return fetch(url);
-}
-
-async function fetchData(file) {
-  const res = await fetchUrl(file);
-  return res.text();
-}
-
-const datasets = await (async function () {
-  // This looks complicated but will make it possible to parallely fetch
-  // additional data in the future.
-  // Just add more fetch operations to the array if needed.
-  const [diamonds] = await Promise.all(["diamonds.csv"].map(fetchData));
-  return {
-    diamonds,
-  };
-})();
+import diamondsDataset from "./data/diamonds.csv?raw";
 
 // https://observablehq.com/@d3/hexbin
 export async function diamonds({ container, width, height }) {
@@ -27,7 +8,7 @@ export async function diamonds({ container, width, height }) {
   const radius = 8;
 
   const data = Object.assign(
-    d3.csvParse(datasets.diamonds, ({ carat, price }) => ({
+    d3.csvParse(diamondsDataset, ({ carat, price }) => ({
       x: +carat,
       y: +price,
     })),
