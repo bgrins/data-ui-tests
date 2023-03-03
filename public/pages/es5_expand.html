@@ -8,7 +8,28 @@
   :root:not(.shown-for-test) .subtest { display: none !important; }
 </style>
 <script>
-  document.addEventListener("click", () => {
+    // console.log(e.target.matches(".folddown"), e.target.matches("a"), e.target);
+    // // The following code is from https://github.com/kangax/compat-table/blob/b4bdfa42cb7199e26a740ae678c33ce1dde78350/master.js#L133
+    //   if (e.target.matches("tr a")) {
+    //     return;
+    //   }
+
+    //   var subtests = tr.nextUntil('tr:not(.subtest)');
+    //   // toggle manually for perf. reasons
+    //   // it would be even better to toggle this via higher-level CSS (on a parent)
+    //   // but current optimization (getting rid of `toggle`)
+    //   // already brings time from ~500ms to ~15ms
+    //   // (mostly due to removal of recalc-heavy `css` for each element)
+    //   // so this is probably sufficient for now
+    //   subtests.each(function(i, el) {
+    //     el.style.display = el.style.display === 'table-row' ? 'none' : 'table-row';
+    //   });
+
+    //   var deg = subtests[0].style.display === 'table-row' ? '90deg' : '0deg';
+    //   tr.find(".folddown").css('transform', 'rotate(' + deg + ')');
+
+  document.addEventListener("click", (e) => {
+
     requestAnimationFrame(() => {
       let start = performance.now();
       performance.mark("show-toggle-start");
