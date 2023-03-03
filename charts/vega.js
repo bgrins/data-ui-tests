@@ -33,6 +33,7 @@ async function renderVega(container, json, renderer) {
   await view.runAsync();
 }
 
+// https://vega.github.io/vega/tutorials/bar-chart/
 export async function barCanvas({ container, width, height }) {
   const json = datasets.simplebars;
   json.width = width;
@@ -40,6 +41,7 @@ export async function barCanvas({ container, width, height }) {
   await renderVega(container, json, "canvas");
 }
 
+// https://vega.github.io/vega/tutorials/bar-chart/
 export async function barSvg({ container, width, height }) {
   const json = datasets.simplebars;
   json.width = width;
@@ -47,6 +49,7 @@ export async function barSvg({ container, width, height }) {
   await renderVega(container, json, "svg");
 }
 
+// modified https://vega.github.io/vega/tutorials/airports/
 export async function airportsSvg({ container, width, height }) {
   const json = datasets.airports;
   json.width = width;
@@ -54,6 +57,7 @@ export async function airportsSvg({ container, width, height }) {
   await renderVega(container, json, "svg");
 }
 
+// modified https://vega.github.io/vega/tutorials/airports/
 export async function airportsCanvas({ container, width, height }) {
   const json = datasets.airports;
   json.width = width;

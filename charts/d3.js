@@ -21,6 +21,7 @@ const datasets = await (async function () {
   };
 })();
 
+// https://observablehq.com/@d3/hexbin
 export async function diamonds({ container, width, height }) {
   const margin = { top: 20, right: 20, bottom: 30, left: 40 };
   const radius = 8;
