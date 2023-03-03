@@ -33,7 +33,7 @@ const series_two = [
   6, 9, 19, 5, 9, 12, 20, 11, 8, 24,
 ];
 
-function spark({ width, height }, series, color) {
+function spark({ container, width, height }, series, color) {
   // var keys = Object.keys(colors);
   // let color = keys[Math.floor(Math.random() * keys.length)];
   const svg = document.createElementNS("http://www.w3.org/2000/svg", "svg");
@@ -45,13 +45,13 @@ function spark({ width, height }, series, color) {
   svg.setAttribute("class", "sparkline");
 
   sparkline.sparkline(svg, series);
-  return svg;
+  container.append(svg);
 }
-export function one({ width, height }) {
-  return spark({ width, height }, series_one, colors.blue);
+export function one({ container, width, height }) {
+  return spark({ container, width, height }, series_one, colors.blue);
 }
-export function two({ width, height }) {
-  return spark({ width, height }, series_two, colors.red);
+export function two({ container, width, height }) {
+  return spark({ container, width, height }, series_two, colors.red);
 }
 
 // setInterval(function() {

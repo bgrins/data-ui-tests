@@ -1,9 +1,8 @@
 // https://echarts.apache.org/handbook/en/basics/import
 import * as echarts from "echarts";
 
-export function bar({ width, height }) {
+export function bar({ container, width, height }) {
   // Create the echarts instance
-  const container = document.createElement("div");
   container.style.width = `${width}px`;
   container.style.height = `${height}px`;
 
@@ -28,6 +27,4 @@ export function bar({ width, height }) {
       },
     ],
   });
-
-  return container;
 }

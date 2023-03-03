@@ -16,18 +16,17 @@ import {
 import React, { PureComponent } from "react";
 import ReactDOM from "react-dom/client";
 
-function mount(element) {
+function mount(container, element) {
   return new Promise((resolve) => {
-    const container = document.createElement("div");
     ReactDOM.createRoot(container).render(
       <React.StrictMode>
-        <div ref={() => resolve(container)}>{element}</div>
+        <div ref={() => resolve()}>{element}</div>
       </React.StrictMode>
     );
   });
 }
 
-export function line({ width, height }) {
+export function line({ container, width, height }) {
   const data = [
     {
       name: "Page A",
@@ -73,6 +72,7 @@ export function line({ width, height }) {
     },
   ];
   return mount(
+    container,
     <LineChart width={width} height={height} data={data}>
       <Line
         type="monotone"
@@ -85,7 +85,7 @@ export function line({ width, height }) {
   );
 }
 
-export function custom({ width, height }) {
+export function custom({ container, width, height }) {
   const data = [{ name: "Page A", uv: 400, pv: 2400, amt: 2400 }];
 
   const renderCustomAxisTick = ({ x, y, payload }) => {
@@ -135,7 +135,7 @@ export function custom({ width, height }) {
 }
 
 // From https://recharts.org/en-US/examples/BubbleChart
-export function bubble({ width, height }) {
+export function bubble({ container, width, height }) {
   const data01 = [
     { hour: "12a", index: 1, value: 170 },
     { hour: "1a", index: 1, value: 180 },
@@ -235,6 +235,7 @@ export function bubble({ width, height }) {
   const range = [16, 225];
 
   return mount(
+    container,
     <div style={{ width: "100%" }}>
       <ResponsiveContainer width="100%" height={60}>
         <ScatterChart
@@ -510,7 +511,7 @@ export function bubble({ width, height }) {
 }
 
 // Adapted from https://recharts.org/en-US/examples/CustomContentTreemap
-export function treemap({ width, height }) {
+export function treemap({ container, width, height }) {
   const data = [
     {
       name: "axis",
@@ -714,6 +715,7 @@ export function treemap({ width, height }) {
   }
 
   return mount(
+    container,
     <Treemap
       width={width}
       height={height}

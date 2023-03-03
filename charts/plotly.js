@@ -21,7 +21,7 @@ import Plotly from "plotly.js-dist-min";
 
 // https://plotly.com/javascript/ribbon-plots/
 
-export function ribbon({ width, height }) {
+export function ribbon({ container, width, height }) {
   var trace1 = {
     x: figure.data[0].x,
     y: figure.data[0].y,
@@ -133,7 +133,5 @@ export function ribbon({ width, height }) {
     },
   };
 
-  const container = document.createElement("div");
   Plotly.newPlot(container, data, layout);
-  return container;
 }

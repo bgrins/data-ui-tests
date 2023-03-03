@@ -20,47 +20,55 @@ let athletes_plot_data = athletes.map((d) => ({
   bronze: +d.bronze,
 }));
 
-export function dot({ width, height }) {
-  return plotDot(athletes_plot_data, {
-    x: "weight",
-    y: "height",
-    stroke: "sex",
-  }).plot({
-    width,
-    height,
-  });
+export function dot({ container, width, height }) {
+  container.append(
+    plotDot(athletes_plot_data, {
+      x: "weight",
+      y: "height",
+      stroke: "sex",
+    }).plot({
+      width,
+      height,
+    })
+  );
 }
 
-export function rect({ width, height }) {
-  return plotRect(
-    athletes_plot_data,
-    bin({ fillOpacity: "count" }, { x: "weight", y: "height", fill: "sex" })
-  ).plot({
-    width,
-    height,
-  });
+export function rect({ container, width, height }) {
+  container.append(
+    plotRect(
+      athletes_plot_data,
+      bin({ fillOpacity: "count" }, { x: "weight", y: "height", fill: "sex" })
+    ).plot({
+      width,
+      height,
+    })
+  );
 }
 
-export function rectY({ width, height }) {
-  return plotRectY(
-    athletes_plot_data,
-    binX({ y: "count" }, { x: "weight", fill: "sex" })
-  ).plot({
-    width,
-    height,
-  });
+export function rectY({ container, width, height }) {
+  container.append(
+    plotRectY(
+      athletes_plot_data,
+      binX({ y: "count" }, { x: "weight", fill: "sex" })
+    ).plot({
+      width,
+      height,
+    })
+  );
 }
-export function plot({ width, height }) {
-  return plotPlot({
-    grid: true,
-    width,
-    height,
-    marks: [
-      plotRectY(
-        athletes_plot_data,
-        binX({ y: "count" }, { x: "weight", fill: "sex", fy: "sex" })
-      ),
-      ruleY([0]),
-    ],
-  });
+export function plot({ container, width, height }) {
+  container.append(
+    plotPlot({
+      grid: true,
+      width,
+      height,
+      marks: [
+        plotRectY(
+          athletes_plot_data,
+          binX({ y: "count" }, { x: "weight", fill: "sex", fy: "sex" })
+        ),
+        ruleY([0]),
+      ],
+    })
+  );
 }

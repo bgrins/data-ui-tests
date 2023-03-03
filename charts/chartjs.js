@@ -1,7 +1,7 @@
 import Chart from "chart.js/auto";
 // https://www.chartjs.org/docs/latest/getting-started/usage.html
 
-export function bar({ width, height }) {
+export function bar({ container, width, height }) {
   const canvas = document.createElement("canvas");
   canvas.width = width;
   canvas.height = height;
@@ -15,6 +15,7 @@ export function bar({ width, height }) {
     { year: 2015, count: 30 },
     { year: 2016, count: 28 },
   ];
+  container.append(canvas);
 
   new Chart(canvas, {
     type: "bar",
@@ -31,11 +32,9 @@ export function bar({ width, height }) {
       animation: false,
     },
   });
-
-  return canvas;
 }
 
-export function polarArea({ width, height }) {
+export function polarArea({ container, width, height }) {
   const data = {
     labels: ["Red", "Green", "Yellow", "Grey", "Blue"],
     datasets: [
@@ -63,11 +62,11 @@ export function polarArea({ width, height }) {
   const canvas = document.createElement("canvas");
   canvas.width = width;
   canvas.height = height;
+  container.append(canvas);
   new Chart(canvas, config);
-  return canvas;
 }
 
-export function scatter({ width, height }) {
+export function scatter({ container, width, height }) {
   // https://www.chartjs.org/docs/latest/charts/scatter.html
   const data = {
     datasets: [
@@ -112,11 +111,11 @@ export function scatter({ width, height }) {
   const canvas = document.createElement("canvas");
   canvas.width = width;
   canvas.height = height;
+  container.append(canvas);
   new Chart(canvas, config);
-  return canvas;
 }
 
-export function radar({ width, height }) {
+export function radar({ container, width, height }) {
   // https://www.chartjs.org/docs/latest/charts/radar.html
   const data = {
     labels: [
@@ -168,6 +167,6 @@ export function radar({ width, height }) {
   const canvas = document.createElement("canvas");
   canvas.width = width;
   canvas.height = height;
+  container.append(canvas);
   new Chart(canvas, config);
-  return canvas;
 }

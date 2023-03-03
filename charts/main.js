@@ -22,7 +22,7 @@ let AUTORUN = new URLSearchParams(window.location.search).has("autorun");
  *    charts: Array<ChartingFunction>
  * }
  *
- * ChartingFunction is a function: ({ width, height }) => HTMLElement
+ * ChartingFunction is a function: ({ container, width, height }) => HTMLElement
  * which configures a render operation and returning the HTML element where the
  * render happens.
  */
@@ -69,11 +69,13 @@ async function renderCurrent() {
   let current = currentLib() ? [currentLib()] : Object.values(ALL_CHARTS);
   for (let { charts } of current) {
     for (let chart of charts) {
-      createChartElement().append(
-        await chart({
-          ...getChartWidthHeight(),
-        })
-      );
+      const container = createChartElement();
+      await chart({
+        container,
+        ...getChartWidthHeight(),
+      });
+      // force sync reflow if needed
+      container.getBoundingClientRect().width;
     }
   }
 }
