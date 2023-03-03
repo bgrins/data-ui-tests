@@ -9,6 +9,21 @@ async function fetchSpec(name) {
   return res.json();
 }
 
+// Note that we're mutating this datasets in the tests, but just for their width
+// and height, so that's probably OK.
+const datasets = await (async function () {
+  // This looks complicated but will make it possible to parallely fetch
+  // additional data in the future.
+  // Just add more fetch operations to the array if needed.
+  const [simplebars, airports] = await Promise.all(
+    ["simplebars", "airports"].map(fetchSpec)
+  );
+  return {
+    simplebars,
+    airports,
+  };
+})();
+
 async function renderVega(container, json, renderer) {
   const view = new vega.View(vega.parse(json), {
     renderer, // renderer (canvas or svg)
@@ -19,28 +34,28 @@ async function renderVega(container, json, renderer) {
 }
 
 export async function barCanvas({ container, width, height }) {
-  const json = await fetchSpec("simplebars");
+  const json = datasets.simplebars;
   json.width = width;
   json.height = height;
   await renderVega(container, json, "canvas");
 }
 
 export async function barSvg({ container, width, height }) {
-  const json = await fetchSpec("simplebars");
+  const json = datasets.simplebars;
   json.width = width;
   json.height = height;
   await renderVega(container, json, "svg");
 }
 
 export async function airportsSvg({ container, width, height }) {
-  const json = await fetchSpec("airports");
+  const json = datasets.airports;
   json.width = width;
   json.height = height;
   await renderVega(container, json, "svg");
 }
 
 export async function airportsCanvas({ container, width, height }) {
-  const json = await fetchSpec("airports");
+  const json = datasets.airports;
   json.width = width;
   json.height = height;
   await renderVega(container, json, "svg");
