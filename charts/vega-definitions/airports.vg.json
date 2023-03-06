@@ -28,7 +28,7 @@
   "data": [
     {
       "name": "states",
-      "url": "vega-definitions/us-10m.json",
+      "url": "/assets-vega/us-10m.json",
       "format": {"type": "topojson", "feature": "states"},
       "transform": [
         {
@@ -39,7 +39,7 @@
     },
     {
       "name": "traffic",
-      "url": "vega-definitions/flights-airport.csv",
+      "url": "/assets-vega/flights-airport.csv",
       "format": {"type": "csv", "parse": "auto"},
       "transform": [
         {
@@ -51,7 +51,7 @@
     },
     {
       "name": "airports",
-      "url": "vega-definitions/airports.csv",
+      "url": "/assets-vega/airports.csv",
       "format": {"type": "csv", "parse": "auto"},
       "transform": [
         {
@@ -85,7 +85,7 @@
     },
     {
       "name": "routes",
-      "url": "vega-definitions/flights-airport.csv",
+      "url": "/assets-vega/flights-airport.csv",
       "format": {"type": "csv", "parse": "auto"},
       "transform": [
         {
