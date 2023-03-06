@@ -89,9 +89,7 @@ export const MyBar = ({
 function mount(container, element) {
   return new Promise((resolve) => {
     ReactDOM.createRoot(container).render(
-      <React.StrictMode>
-        <div ref={() => resolve()}>{element}</div>
-      </React.StrictMode>
+      <div ref={() => resolve()}>{element}</div>
     );
   });
 }
