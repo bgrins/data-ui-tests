@@ -1,5 +1,6 @@
 // import { musicRevenue } from "/charts/revenue_by_music_format.js";
 import * as d3 from "/charts/d3.js";
+import * as nivo from "/charts/nivo.jsx";
 import * as plot from "/charts/plot.js";
 import * as sparkline from "/charts/sparkline.js";
 import * as chartjs from "/charts/chartjs.js";
@@ -30,6 +31,9 @@ let AUTORUN = new URLSearchParams(window.location.search).has("autorun");
 const ALL_CHARTS = {
   d3: {
     charts: [d3.diamonds],
+  },
+  nivo: {
+    charts: [nivo.barSvg, nivo.barCanvas, nivo.sameWithD3],
   },
   plot: {
     charts: [plot.rect, plot.dot, plot.rectY, plot.plot],
