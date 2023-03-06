@@ -65,8 +65,9 @@ const ALL_CHARTS = {
   plotly: { charts: [plotly.ribbon] },
 };
 
-const currentLib = () =>
-  ALL_CHARTS[document.querySelector("input[name=lib]:checked")?.value];
+const currentLibName = () =>
+  document.querySelector("input[name=lib]:checked")?.value;
+const currentLib = () => ALL_CHARTS[currentLibName()];
 
 async function renderCurrent() {
   const { width, height } = getChartWidthHeight();
@@ -76,7 +77,12 @@ async function renderCurrent() {
 
   let current = currentLib() ? [currentLib()] : Object.values(ALL_CHARTS);
   for (let { charts } of current) {
-    for (let chart of charts) {
+    for (let chartIndex = 0; chartIndex < charts.length; chartIndex++) {
+      const chart = charts[chartIndex];
+      const funcName = `${chart.displayName ?? chart.name}-${chartIndex}`;
+      const testName = `${currentLibName()}-${getChartSize()}-${funcName}`;
+      performance.mark(`test-${testName}-started`);
+
       const container = createChartElement();
       await chart({
         container,
@@ -84,6 +90,7 @@ async function renderCurrent() {
       });
       // force sync reflow if needed
       container.getBoundingClientRect().width;
+      performance.mark(`test-${testName}-ended`);
     }
   }
 }
@@ -143,6 +150,21 @@ function createOptions() {
   }
 }
 
+function createMeasureTimings() {
+  const entries = performance.getEntriesByType("mark");
+  for (const entry of entries) {
+    if (entry.name.endsWith("-ended")) {
+      const baseName = entry.name.slice(0, -"-ended".length);
+      console.log(baseName);
+      performance.measure(
+        `${baseName}-complete`,
+        `${baseName}-started`,
+        entry.name
+      );
+    }
+  }
+}
+
 let running = false;
 async function run() {
   if (running) {
@@ -157,30 +179,32 @@ async function run() {
       permutations.push([library, size]);
     }
   }
+  performance.clearMarks();
   performance.mark(`autorun-started`);
 
   for (let [library, size] of permutations) {
     await new Promise((r) => requestAnimationFrame(r));
     let libraryName = library.value;
-    performance.mark(`autorun-${libraryName}-${size}-started`);
+    const startMark = performance.mark(
+      `autorun-${libraryName}-${size}-started`
+    );
     document.querySelector("#chart-size").value = size;
     library.checked = true;
     await renderCurrent();
-    // Force a reflow
-    performance.mark(`autorun-${libraryName}-${size}-complete`);
+    const endMark = performance.mark(`autorun-${libraryName}-${size}-ended`);
     setStatus(
       `${libraryName}-${size} took ${Math.round(
-        performance.measure(
-          `autorun-${libraryName}-${size}-complete`,
-          `autorun-${libraryName}-${size}-started`
-        ).duration
+        endMark.startTime - startMark.startTime
       )}ms`
     );
 
     await new Promise((r) => requestAnimationFrame(r));
   }
 
-  performance.mark(`autorun-complete`);
+  performance.mark(`autorun-ended`);
+
+  createMeasureTimings();
+
   setStatus(
     `Autorun took ${Math.round(
       performance.measure(`autorun-complete`, `autorun-started`).duration
@@ -190,14 +214,18 @@ async function run() {
   document.querySelector("#show-logs").click();
 }
 
-document.addEventListener("change", (e) => {
+document.addEventListener("change", async (e) => {
   if (e.target.id === "chart-size") {
     setStatus(`Size changed to ${e.target.value}`);
-    renderCurrent();
+    performance.clearMarks();
+    await renderCurrent();
+    createMeasureTimings();
   }
   if (e.target.name === "lib") {
     setStatus(`Lib changed to ${e.target.value}`);
-    renderCurrent();
+    performance.clearMarks();
+    await renderCurrent();
+    createMeasureTimings();
   }
 });
 
@@ -223,10 +251,12 @@ document.querySelector("#run").addEventListener("click", run);
 
 createOptions();
 
-setTimeout(() => {
+setTimeout(async () => {
   if (AUTORUN) {
     document.querySelector("#run").click();
   } else {
-    renderCurrent();
+    performance.clearMarks();
+    await renderCurrent();
+    createMeasureTimings();
   }
 }, 0);
