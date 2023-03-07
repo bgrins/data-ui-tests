@@ -12,6 +12,14 @@ export default defineConfig({
     rollupOptions: {
       cache: false,
       maxParallelFileOps: 2,
+      output: {
+        sourcemap: false,
+        manualChunks: (id) => {
+         if (id.includes('node_modules')) {
+            return 'vendor';
+          }
+        },
+      },
       input: {
         main: resolve(__dirname, "index.html"),
         charts: resolve(__dirname, "charts/index.html"),
