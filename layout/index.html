@@ -21,8 +21,7 @@
     </header>
     <div id="app">
       <div id="results">
-        <table>
-        </table>
+        <table></table>
       </div>
     </div>
     <footer></footer>
@@ -42,29 +41,55 @@
         "noop.html",
       ];
       let table = document.querySelector("#results table");
+      let allLoaded = [];
       for (let url of urls) {
         let row = document.createElement("tr");
         let cell = document.createElement("td");
         let iframe = document.createElement("iframe");
         iframe.src = "../pages/" + url;
+        allLoaded.push(new Promise((resolve) => (iframe.onload = resolve)));
         cell.appendChild(iframe);
         row.appendChild(cell);
         table.appendChild(row);
       }
 
+      let running = false;
       document.querySelector("#run").addEventListener("click", async () => {
+        if (running) {
+          console.log("Not running, a current run is happening");
+          return;
+        }
+        running = true;
+        console.log("Waiting for iframe loads");
+        const times = {};
+        await Promise.all(allLoaded);
         const results = document.querySelector("#results");
         const iframes = results.querySelectorAll("iframe");
         for (const iframe of iframes) {
-          iframe.contentDocument.body.click();
+          iframe.scrollIntoView();
+          await new Promise((resolve) => {
+            iframe.contentWindow.addEventListener(
+              "message",
+              (event) => {
+                times[iframe.contentWindow.location.pathname] = Math.round(
+                  event.data.data
+                );
+                resolve();
+              },
+              { once: true }
+            );
+            iframe.contentDocument.body.click();
+          });
           await new Promise((resolve) =>
             iframe.contentWindow.requestAnimationFrame(resolve)
           );
-          await new Promise((resolve) => setTimeout(resolve, 100));
           await new Promise((resolve) =>
             iframe.contentWindow.requestAnimationFrame(resolve)
           );
+
+          running = false;
         }
+        console.table(times);
         console.log("All done");
       });
     </script>
