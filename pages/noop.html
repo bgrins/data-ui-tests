@@ -1,0 +1,44 @@
+<!DOCTYPE html>
+<html lang="">
+  <head>
+    <meta charset="utf-8" />
+
+    <style>
+      :root:not(.shown-for-test) body { display: none !important; }
+      :root:not(.shown-for-test)::after {
+        content: "Click to reveal content";
+        text-align: center;
+        font-weight: bold;
+        font-size: 2em;
+        margin-top: 20px;
+        display: block;
+      }
+    </style>
+    <script>
+      document.addEventListener("click", () => {
+        requestAnimationFrame(() => {
+          let start = performance.now();
+          performance.mark("show-toggle-start");
+
+          document.documentElement.classList.toggle("shown-for-test");
+          
+          let syncEnd = performance.now();
+          let asyncStart = performance.now();
+          setTimeout(() => {
+            let asyncEnd = performance.now();
+            performance.mark("show-toggle-end");
+            performance.measure("show-toggle", "show-toggle-start", "show-toggle-end");
+            console.log(`Toggle took ${syncEnd - start}ms sync and ${asyncEnd - asyncStart}ms async`);
+          }, 0)
+        });
+      }, true);
+    </script>
+
+    <title></title>
+    <meta name="description" content="" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+  </head>
+  <body>
+    <p>Simplest page</p>
+  </body>
+</html>

@@ -1,1 +1,0 @@
-import"./modulepreload-polyfill-ec808ebb.js";document.querySelector("#run").addEventListener("click",async()=>{const o=document.querySelector("#results").querySelectorAll("iframe");for(const t of o)t.contentDocument.body.click(),await new Promise(e=>t.contentWindow.requestAnimationFrame(e)),await new Promise(e=>setTimeout(e,500))});
