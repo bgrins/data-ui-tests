@@ -41,5 +41,5 @@ export async function airportsCanvas({ container, width, height }) {
   const json = airportsDataset;
   json.width = width;
   json.height = height;
-  await renderVega(container, json, "svg");
+  await renderVega(container, json, "canvas");
 }
