@@ -20,6 +20,7 @@ jobs:
           node-version: 18.x
           cache: "npm"
       - run: npm install
+      # Fix build error https://github.com/vitejs/vite/issues/2433
       - run: node --max_old_space_size=16384 ./node_modules/vite/bin/vite.js build
 
       - name: Deploy
