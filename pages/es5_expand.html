@@ -42,6 +42,7 @@
         let asyncEnd = performance.now();
         performance.mark("show-toggle-end");
         performance.measure("show-toggle", "show-toggle-start", "show-toggle-end");
+        window.postMessage({type: "time", data: asyncEnd - start});
         console.log(`Toggle took ${syncEnd - start}ms sync and ${asyncEnd - asyncStart}ms async`);
       }, 0)
     });
