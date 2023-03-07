@@ -5,8 +5,10 @@ export default defineConfig({
   plugins: [react()],
   base: "./",
   build: {
-    // sourcemap: false,
-    // minify: false,
+    // https://github.com/vitejs/vite/issues/2433
+    // Attempting to fix errors like https://github.com/bgrins/data-ui-tests/actions/runs/4350881786/jobs/7602010504
+    sourcemap: false,
+    minify: false,
     rollupOptions: {
       cache: false,
       input: {
