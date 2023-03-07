@@ -20,7 +20,7 @@ jobs:
           node-version: 18.x
           cache: "npm"
       - run: npm install
-      - run: npm run build --if-present
+      - run: node --max_old_space_size=16384 ./node_modules/vite/bin/vite.js build
 
       - name: Deploy
         uses: peaceiris/actions-gh-pages@v3
