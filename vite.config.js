@@ -11,6 +11,7 @@ export default defineConfig({
     minify: false,
     rollupOptions: {
       cache: false,
+      maxParallelFileOps: 2,
       input: {
         main: resolve(__dirname, "index.html"),
         charts: resolve(__dirname, "charts/index.html"),
