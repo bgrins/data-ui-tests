@@ -1,17 +1,18 @@
-
-import { resolve } from 'path'
+import { resolve } from "path";
 import { defineConfig } from "vite";
-import react from '@vitejs/plugin-react';
+import react from "@vitejs/plugin-react";
 export default defineConfig({
   plugins: [react()],
   base: "./",
   build: {
+    // sourcemap: false,
     // minify: false,
     rollupOptions: {
+      cache: false,
       input: {
-        main: resolve(__dirname, 'index.html'),
-        charts: resolve(__dirname, 'charts/index.html'),
-        layout: resolve(__dirname, 'layout/index.html'),
+        main: resolve(__dirname, "index.html"),
+        charts: resolve(__dirname, "charts/index.html"),
+        layout: resolve(__dirname, "layout/index.html"),
       },
     },
   },
