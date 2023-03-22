@@ -1,0 +1,17 @@
+{
+  "name": "ssr",
+  "private": true,
+  "version": "0.0.0",
+  "type": "module",
+  "description": "",
+  "main": "create-mocked-service-worker.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "keywords": [],
+  "author": "",
+  "license": "ISC",
+  "dependencies": {
+    "mime-types": "^2.1.35"
+  }
+}
