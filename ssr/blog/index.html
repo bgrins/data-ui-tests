@@ -19,6 +19,8 @@
       }
       #log {
         margin-left: 5px;
+        overflow: auto;
+        max-height: 80vh;
       }
 
       .explanation {
@@ -69,7 +71,7 @@
       create-mocked-service-worker.js simple/content simple/sw.js`
     </div>
     <div id="container">
-      <iframe id="preview"></iframe>
+      <iframe id="preview" src="about:blank"></iframe>
       <pre id="log"></pre>
     </div>
     <script type="module">
@@ -97,7 +99,7 @@
       (async () => {
         function log(msg) {
           let log = document.querySelector("#log");
-          log.textContent += msg + "\n";
+          log.textContent = msg + "\n\n" + log.textContent;
           console.log(msg);
         }
 
@@ -117,8 +119,12 @@
             perfData.domContentLoadedEventEnd - perfData.navigationStart;
           const pageLoadTime =
             perfData.loadEventStart - perfData.navigationStart;
-
-          log(`${iframe.contentWindow.location} - DOMContentLoaded ${domContentLoaded}ms / load ${pageLoadTime}ms`);
+          const responseEnd = perfData.responseEnd - perfData.navigationStart;
+          const domInteractive = perfData.domInteractive - perfData.navigationStart;
+          log(
+            `${iframe.contentWindow.location.pathname} load took ${pageLoadTime}ms:
+  responseEnd: ${responseEnd}ms, domInteractive: ${domInteractive}ms, DOMContentLoaded: ${domContentLoaded}ms`
+          );
         };
 
         function loadMockedPage(src) {
