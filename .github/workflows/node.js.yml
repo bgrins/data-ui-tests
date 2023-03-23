@@ -12,6 +12,8 @@ on:
 jobs:
   build:
     runs-on: macos-latest
+    env:
+      URL_ROOT: data-ui-tests/
     steps:
       - uses: actions/checkout@v3
       - name: Use Node.js 18.x

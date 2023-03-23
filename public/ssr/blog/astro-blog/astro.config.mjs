@@ -6,7 +6,7 @@ import sitemap from "@astrojs/sitemap";
 // https://astro.build/config
 export default defineConfig({
   site: "https://example.com",
-  base: "ssr/blog/mocked",
+  base: (process.env.URL_ROOT || "") + "ssr/blog/mocked/",
   build: {
     // Example: Generate `page.html` instead of `page/index.html` during build.
     format: 'file'

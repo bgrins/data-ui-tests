@@ -89,7 +89,9 @@
           console.log("Service worker active");
         }
 
-        registration.addEventListener("updatefound", () => {});
+        registration.addEventListener("updatefound", () => {
+          console.log("Update found from sw");
+        });
       };
 
       (async () => {
@@ -106,19 +108,21 @@
             performance.now() - regStart
           )} ms`
         );
+        let iframe = document.querySelector("#preview");
+
+        iframe.onload = () => {
+          const perfData = iframe.contentWindow.performance.timing;
+          console.log(perfData);
+          const domContentLoaded =
+            perfData.domContentLoadedEventEnd - perfData.navigationStart;
+          const pageLoadTime =
+            perfData.loadEventStart - perfData.navigationStart;
+
+          log(`${iframe.contentWindow.location} - DOMContentLoaded ${domContentLoaded}ms / load ${pageLoadTime}ms`);
+        };
 
         function loadMockedPage(src) {
-          let iframe = document.querySelector("#preview");
-          let start = performance.now();
           iframe.src = src;
-          iframe.onload = () => {
-            const perfData = iframe.contentWindow.performance.timing;
-            console.log(perfData);
-            const pageLoadTime =
-              perfData.loadEventStart - perfData.navigationStart;
-
-            log(`${src} loaded in ${pageLoadTime} ms`);
-          };
         }
 
         loadMockedPage("./mocked/index.html");
