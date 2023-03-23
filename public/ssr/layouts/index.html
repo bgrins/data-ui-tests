@@ -69,12 +69,7 @@
       create-mocked-service-worker.js simple/content simple/sw.js`
     </div>
     <div class="options">
-      <input
-        id="mdn"
-        name="page"
-        type="radio"
-        value="mocked/mdn.html"
-      />
+      <input id="mdn" name="page" type="radio" value="mocked/mdn.html" />
       <label for="mdn">mdn.html</label>
       <input
         id="es2016plus"
@@ -83,6 +78,14 @@
         value="mocked/es2016plus.html"
       />
       <label for="es2016plus">es2016plus.html</label>
+      <input
+        id="mdn2"
+        name="page"
+        type="radio"
+        value="https://developer.mozilla.org/en-US/"
+      />
+      <label for="mdn2">mdn2.html</label>
+      
     </div>
     <div id="container">
       <iframe id="preview"></iframe>
@@ -99,7 +102,7 @@
           throw new Error("Not supported");
         }
         const registration = await service_worker_unregister_and_register(
-          "sw.js",
+          "test-mdn-sw.js", //"sw.js",
           "./mocked"
         );
         await wait_for_state(registration.installing, "activated");
@@ -140,6 +143,7 @@
         function loadMockedPage(src) {
           iframe.src = src;
         }
+        loadMockedPage("mocked/index.html");
 
         document.addEventListener("change", (e) => {
           loadMockedPage(e.target.value);
