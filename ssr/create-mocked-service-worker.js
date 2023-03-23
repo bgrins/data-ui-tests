@@ -66,8 +66,6 @@ self.addEventListener("fetch", (event) => {
 for (const file of files) {
   let relativePath = path.relative(dir, file);
   let type = mime.lookup(file);
-  // Convert the file to a Blob
-
   let data = {
     base64: fs.readFileSync(file).toString("base64"),
     type,
@@ -76,16 +74,6 @@ for (const file of files) {
   script += `
 RESPONSES.set("/mocked/${relativePath}", b64toBlob("${data.base64}", "${data.type}"));
 `;
-  // script += `
-  // RESPONSES.set("/mocked/${relativePath}",
-  // () => {
-  //   var data = "${data.base64}";
-  //   var blob = b64toBlob(data, "${data.type}");
-  //   return new Response(blob, { status: 200, headers: {
-  //     "Cache-Control": "max-age=604800"
-  //   } });
-  // });
-  // `;
 }
 
 fs.writeFileSync(out, script);
