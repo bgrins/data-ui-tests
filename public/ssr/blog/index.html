@@ -118,7 +118,7 @@
           const pageLoadTime =
             perfData.loadEventStart - perfData.navigationStart;
 
-          log(`${iframe.contentWindow.location} - DOMContentLoaded ${domContentLoaded}ms / load ${pageLoadTime}ms`);
+          log(`${iframe.contentWindow.location.pathname} - DOMContentLoaded ${domContentLoaded}ms / load ${pageLoadTime}ms`);
         };
 
         function loadMockedPage(src) {
