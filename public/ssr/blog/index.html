@@ -1,0 +1,128 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>SSR Demo</title>
+    <style>
+      iframe {
+        width: 800px;
+        height: 600px;
+        border: 1px solid;
+        margin: 0;
+      }
+
+      #container {
+        display: flex;
+        flex-direction: row;
+        margin-top: 2px;
+      }
+      #log {
+        margin-left: 5px;
+      }
+
+      .explanation {
+        padding: 4px;
+        background: lightblue;
+        margin-bottom: 4px;
+      }
+
+      .options {
+        position: relative;
+        display: inline-block;
+        border: solid 1px orange;
+        border-radius: 1px;
+        margin-right: 5px;
+      }
+
+      .options > label {
+        display: inline-flex;
+        min-width: 60px;
+        padding: 0 5px;
+        justify-content: center;
+        cursor: pointer;
+        font-weight: bold;
+      }
+
+      .options input[type="range"] {
+        width: 70px;
+        margin: 0 5px;
+      }
+      .options > input[type="radio"] {
+        display: none;
+      }
+
+      .options > input[type="radio"]:checked + label {
+        background: orange;
+      }
+    </style>
+  </head>
+  <body>
+    <div class="explanation">
+      In this page, we have an iframe which loads documents that are returned by
+      a Service Worker. These are hardcoded into the service worker script so
+      there is no network or disc latency involved. The SW script itself is
+      built from a static directory. This could be one way to capture a kind of
+      time to responsivenss for complex pages in Speedometer.
+      <br />
+      In order to regenerate this page, run ` node
+      create-mocked-service-worker.js simple/content simple/sw.js`
+    </div>
+    <div id="container">
+      <iframe id="preview"></iframe>
+      <pre id="log"></pre>
+    </div>
+    <script type="module">
+      const registerServiceWorker = async () => {
+        if (!("serviceWorker" in navigator)) {
+          throw new Error("Not supported");
+        }
+        const registration = await navigator.serviceWorker.register("sw.js", {
+          scope: "./mocked",
+        });
+        await registration.update();
+        if (registration.installing) {
+          console.log("Service worker installing");
+        } else if (registration.waiting) {
+          console.log("Service worker installed");
+        } else if (registration.active) {
+          console.log("Service worker active");
+        }
+
+        registration.addEventListener("updatefound", () => {});
+      };
+
+      (async () => {
+        function log(msg) {
+          let log = document.querySelector("#log");
+          log.textContent += msg + "\n";
+          console.log(msg);
+        }
+
+        let regStart = performance.now();
+        await registerServiceWorker();
+        log(
+          `Service worker registered in ${Math.round(
+            performance.now() - regStart
+          )} ms`
+        );
+
+        function loadMockedPage(src) {
+          let iframe = document.querySelector("#preview");
+          let start = performance.now();
+          iframe.src = src;
+          iframe.onload = () => {
+            const perfData = iframe.contentWindow.performance.timing;
+            console.log(perfData);
+            const pageLoadTime =
+              perfData.loadEventStart - perfData.navigationStart;
+
+            log(`${src} loaded in ${pageLoadTime} ms`);
+          };
+        }
+
+        loadMockedPage("./mocked/index.html");
+      })();
+    </script>
+  </body>
+</html>
