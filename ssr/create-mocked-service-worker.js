@@ -56,11 +56,9 @@ self.addEventListener("fetch", (event) => {
     path,
     RESPONSES.has(path)
   );
-  if (RESPONSES.get(path)) {
-    let start = performance.now();
-    let response = RESPONSES.get(path)();
-    console.log("fetch", performance.now() - start, response);
-    event.respondWith(response);
+  if (RESPONSES.has(path)) {
+    let resp = new Response(RESPONSES.get(path), { status: 200 });
+    event.respondWith(resp);
   }
 });
 `;
@@ -76,13 +74,18 @@ for (const file of files) {
   };
 
   script += `
-RESPONSES.set("/mocked/${relativePath}",
-  () => {
-    var data = "${data.base64}";
-    var blob = b64toBlob(data, "${data.type}");
-    return new Response(blob, { status: 200 });
-  });
+RESPONSES.set("/mocked/${relativePath}", b64toBlob("${data.base64}", "${data.type}"));
 `;
+  // script += `
+  // RESPONSES.set("/mocked/${relativePath}",
+  // () => {
+  //   var data = "${data.base64}";
+  //   var blob = b64toBlob(data, "${data.type}");
+  //   return new Response(blob, { status: 200, headers: {
+  //     "Cache-Control": "max-age=604800"
+  //   } });
+  // });
+  // `;
 }
 
 fs.writeFileSync(out, script);
