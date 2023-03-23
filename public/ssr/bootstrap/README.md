@@ -1,0 +1,1 @@
+node create-mocked-service-worker.js ~/Code/bootstrap bootstrap/sw.js

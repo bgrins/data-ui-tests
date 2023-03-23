@@ -6,9 +6,15 @@ import fs, { promises } from "fs";
 import mime from "mime-types";
 const { readdir } = promises;
 async function getFiles(dir) {
-  const dirents = await readdir(dir, { withFileTypes: true });
+  let dirs = await readdir(dir, { withFileTypes: true });
+  dirs = dirs.filter((dir) => {
+    if (dir.name.startsWith(".")) {
+      return false;
+    }
+    return true;
+  });
   const files = await Promise.all(
-    dirents.map((dirent) => {
+    dirs.map((dirent) => {
       const res = resolve(dir, dirent.name);
       return dirent.isDirectory() ? getFiles(res) : res;
     })
@@ -56,6 +62,9 @@ self.addEventListener("fetch", (event) => {
     path,
     RESPONSES.has(path)
   );
+  if (!RESPONSES.has(path) && path.endsWith("/")) {
+    path += "index.html";
+  }
   if (RESPONSES.has(path)) {
     let resp = new Response(RESPONSES.get(path), { status: 200 });
     event.respondWith(resp);

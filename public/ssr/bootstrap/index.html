@@ -19,6 +19,8 @@
       }
       #log {
         margin-left: 5px;
+        overflow: auto;
+        max-height: 80vh;
       }
 
       .explanation {
@@ -68,55 +70,36 @@
       In order to regenerate this page, run ` node
       create-mocked-service-worker.js simple/content simple/sw.js`
     </div>
-    <div class="options">
-      <input
-        id="mdn"
-        name="page"
-        type="radio"
-        value="mocked/mdn.html"
-      />
-      <label for="mdn">mdn.html</label>
-      <input
-        id="es2016plus"
-        name="page"
-        type="radio"
-        value="mocked/es2016plus.html"
-      />
-      <label for="es2016plus">es2016plus.html</label>
-      <input
-        id="index"
-        name="page"
-        type="radio"
-        value="mocked/index.html"
-      />
-      <label for="index">index.html</label>
-    </div>
     <div id="container">
-      <iframe id="preview"></iframe>
+      <iframe id="preview" src="about:blank"></iframe>
       <pre id="log"></pre>
     </div>
     <script type="module">
-      import {
-        service_worker_unregister_and_register,
-        wait_for_state,
-      } from "../service-worker-registration.js";
-
       const registerServiceWorker = async () => {
         if (!("serviceWorker" in navigator)) {
           throw new Error("Not supported");
         }
-        const registration = await service_worker_unregister_and_register(
-          "test-bootstrap-sw.js",
-          "./mocked"
-        );
-        console.log(registration)
-        await wait_for_state(registration.installing, "activated");
+        const registration = await navigator.serviceWorker.register("sw.js", {
+          scope: "./mocked",
+        });
+        await registration.update();
+        if (registration.installing) {
+          console.log("Service worker installing");
+        } else if (registration.waiting) {
+          console.log("Service worker installed");
+        } else if (registration.active) {
+          console.log("Service worker active");
+        }
+
+        registration.addEventListener("updatefound", () => {
+          console.log("Update found from sw");
+        });
       };
 
       (async () => {
         function log(msg) {
           let log = document.querySelector("#log");
-          log.textContent += msg + "\n";
+          log.textContent = msg + "\n\n" + log.textContent;
           console.log(msg);
         }
 
@@ -127,8 +110,8 @@
             performance.now() - regStart
           )} ms`
         );
-
         let iframe = document.querySelector("#preview");
+
         iframe.onload = () => {
           const perfData = iframe.contentWindow.performance.timing;
           console.log(perfData);
@@ -149,14 +132,7 @@
           iframe.src = src;
         }
 
-        document.addEventListener("change", (e) => {
-          loadMockedPage(e.target.value);
-        });
-        if (document.querySelector("input[name=page]:checked")) {
-          loadMockedPage(
-            document.querySelector("input[name=page]:checked").value
-          );
-        }
+        loadMockedPage("./mocked/index.html");
       })();
     </script>
   </body>
