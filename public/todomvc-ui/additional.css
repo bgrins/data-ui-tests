@@ -17,7 +17,7 @@ body {
   height: calc(100vh - 10px);
   box-shadow: 0 0 3px rgba(0, 0, 0, 0.33);
   display: grid;
-  grid-template-columns: minmax(10px, 1fr) minmax(10px, 3fr);
+  grid-template-columns: minmax(100px, 1fr) minmax(10px, 5fr);
   grid-template-rows: min-content min-content 1fr min-content;
   gap: 1px;
 }
@@ -51,6 +51,9 @@ body {
 .page-nav {
   grid-column: 2/3;
   background: #bbdefb;
+  padding: 5px;
+  text-align: center;
+  position: relative;
 }
 
 .page-main {

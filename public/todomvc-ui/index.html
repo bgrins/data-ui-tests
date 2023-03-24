@@ -18,7 +18,21 @@
       <header class="page-header header">
         <h1>todos</h1>
       </header>
-      <nav class="page-nav">Nav</nav>
+      <nav class="page-nav">
+        <span class="todo-count"></span>
+        <ul class="filters">
+          <li>
+            <a href="#/" class="selected">All</a>
+          </li>
+          <li>
+            <a href="#/active">Active</a>
+          </li>
+          <li>
+            <a href="#/completed">Completed</a>
+          </li>
+        </ul>
+        <button class="clear-completed">Clear completed</button>
+      </nav>
       <main class="page-main">
         <article>
           <section class="todoapp">
@@ -36,21 +50,7 @@
               >
               <ul class="todo-list"></ul>
             </section>
-            <footer class="footer">
-              <span class="todo-count"></span>
-              <ul class="filters">
-                <li>
-                  <a href="#/" class="selected">All</a>
-                </li>
-                <li>
-                  <a href="#/active">Active</a>
-                </li>
-                <li>
-                  <a href="#/completed">Completed</a>
-                </li>
-              </ul>
-              <button class="clear-completed">Clear completed</button>
-            </footer>
+            <footer class="footer"></footer>
           </section>
         </article>
       </main>
