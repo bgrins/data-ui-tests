@@ -21,6 +21,7 @@ body {
   grid-template-rows: min-content min-content 1fr min-content;
   gap: 1px;
 }
+
 .page-wrap > * {
   padding: 2px;
   text-align: center;
@@ -54,6 +55,7 @@ body {
   padding: 5px;
   text-align: center;
   position: relative;
+	height: 30px;
 }
 
 .page-main {
@@ -72,10 +74,6 @@ body {
 
 .todoapp {
   margin: 0;
-}
-
-.footer {
-  height: 40px;
 }
 
 .page-footer {
